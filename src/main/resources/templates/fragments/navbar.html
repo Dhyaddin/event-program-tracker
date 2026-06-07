@@ -45,7 +45,7 @@
                        style="color:var(--text-secondary);font-size:var(--text-sm);
                               transition:color var(--transition-fast);border-radius:var(--radius-lg);padding-top:0.5rem;padding-bottom:0.5rem;"
                        th:href="@{/}"
-                       th:classappend="${#httpServletRequest.requestURI == '/'} ? 'active-nav' : ''">
+                       th:classappend="${currentPage == '/'} ? 'active-nav' : ''">
                         <i class="bi bi-house me-1"></i>Home
                     </a>
                 </li>
