@@ -1,0 +1,121 @@
+/* ================================================================
+   VARIABLES.CSS — Design Tokens
+   Event & Program Tracker — CSC3402 Group Project
+   ================================================================ */
+
+:root {
+  /* ── BRAND COLORS ─────────────────────────────────────── */
+  --primary:         #5B3FFF;
+  --primary-dark:    #4530D9;
+  --primary-light:   #7B63FF;
+  --primary-ghost:   rgba(91, 63, 255, 0.08);
+  --primary-ghost-md:rgba(91, 63, 255, 0.15);
+
+  --secondary:       #FF6B6B;
+  --secondary-dark:  #E55252;
+  --secondary-light: #FF9090;
+  --secondary-ghost: rgba(255, 107, 107, 0.10);
+
+  /* ── NEUTRALS ─────────────────────────────────────────── */
+  --white:           #FFFFFF;
+  --bg:              #F8F9FC;
+  --bg-alt:          #F0F2F9;
+  --surface:         #FFFFFF;
+  --border:          #E2E5F0;
+  --border-light:    #EEF0F8;
+
+  /* ── TEXT ────────────────────────────────────────────── */
+  --text-dark:       #16132E;
+  --text-body:       #4A4A6A;
+  --text-muted:      #8B8BAA;
+  --text-white:      #FFFFFF;
+
+  /* ── STATUS ──────────────────────────────────────────── */
+  --success:         #10B981;
+  --success-bg:      rgba(16, 185, 129, 0.10);
+  --warning:         #F59E0B;
+  --warning-bg:      rgba(245, 158, 11, 0.10);
+  --danger:          #EF4444;
+  --danger-bg:       rgba(239, 68, 68, 0.10);
+  --info:            #3B82F6;
+  --info-bg:         rgba(59, 130, 246, 0.10);
+
+  /* ── TYPOGRAPHY ─────────────────────────────────────── */
+  --font:            'Poppins', sans-serif;
+
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.8125rem;  /* 13px */
+  --text-base: 0.9375rem;  /* 15px */
+  --text-md:   1rem;       /* 16px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  2rem;       /* 32px */
+  --text-4xl:  2.625rem;   /* 42px */
+  --text-hero: 3.5rem;     /* 56px */
+
+  --fw-light:   300;
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+  --fw-black:   800;
+
+  /* ── SPACING ─────────────────────────────────────────── */
+  --s-1:  0.25rem;   /* 4px  */
+  --s-2:  0.5rem;    /* 8px  */
+  --s-3:  0.75rem;   /* 12px */
+  --s-4:  1rem;      /* 16px */
+  --s-5:  1.25rem;   /* 20px */
+  --s-6:  1.5rem;    /* 24px */
+  --s-8:  2rem;      /* 32px */
+  --s-10: 2.5rem;    /* 40px */
+  --s-12: 3rem;      /* 48px */
+  --s-16: 4rem;      /* 64px */
+  --s-20: 5rem;      /* 80px */
+  --s-24: 6rem;      /* 96px */
+
+  /* ── BORDER RADIUS ───────────────────────────────────── */
+  --r-xs:   4px;
+  --r-sm:   8px;
+  --r-md:   12px;
+  --r-lg:   16px;
+  --r-xl:   24px;
+  --r-2xl:  32px;
+  --r-full: 9999px;
+
+  /* ── SHADOWS ─────────────────────────────────────────── */
+  --shadow-xs: 0 1px 3px rgba(22, 19, 46, 0.05);
+  --shadow-sm: 0 2px 10px rgba(91, 63, 255, 0.07), 0 1px 3px rgba(22, 19, 46, 0.04);
+  --shadow-md: 0 4px 20px rgba(91, 63, 255, 0.10), 0 2px 8px rgba(22, 19, 46, 0.05);
+  --shadow-lg: 0 8px 40px rgba(91, 63, 255, 0.14), 0 4px 16px rgba(22, 19, 46, 0.08);
+  --shadow-xl: 0 16px 60px rgba(91, 63, 255, 0.20);
+  --shadow-btn: 0 6px 20px rgba(91, 63, 255, 0.38);
+  --shadow-btn-sec: 0 6px 20px rgba(255, 107, 107, 0.38);
+
+  /* ── TRANSITIONS ─────────────────────────────────────── */
+  --ease:        250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-fast:   150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-slow:   400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── GRADIENTS ───────────────────────────────────────── */
+  --grad-primary:  linear-gradient(135deg, #5B3FFF 0%, #7B63FF 100%);
+  --grad-secondary:linear-gradient(135deg, #FF6B6B 0%, #FF9090 100%);
+  --grad-hero:     linear-gradient(135deg, #1E0F6B 0%, #5B3FFF 45%, #8966FF 70%, #FF6B6B 100%);
+  --grad-card-shine:linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 60%);
+  --grad-text:     linear-gradient(135deg, #5B3FFF 0%, #FF6B6B 100%);
+
+  /* ── LAYOUT ──────────────────────────────────────────── */
+  --navbar-h:    72px;
+  --sidebar-w:   264px;
+  --container:   1200px;
+
+  /* ── Z-INDEX ─────────────────────────────────────────── */
+  --z-base:    0;
+  --z-raised:  10;
+  --z-sticky:  100;
+  --z-navbar:  1000;
+  --z-modal:   1100;
+  --z-toast:   1200;
+}

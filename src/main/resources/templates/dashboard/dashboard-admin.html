@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/dashboard/dashboard-admin.html
+  Route: GET /dashboard/admin
+  Controller: DashboardController.adminDashboard()
+  Access: ADMIN role required
+-->
+
+<head th:replace="~{fragments/head :: head(title='Admin Dashboard')}"></head>
+<link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+<link rel="stylesheet" th:href="@{/css/event.css}"/>
+
+<body>
+<div class="dashboard-layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='dashboard', userRole='ADMIN')}"></div>
+
+    <div class="dashboard-main">
+
+        <!-- Topbar -->
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <span style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--danger);">
+                    <i class="bi bi-shield-check me-1"></i>Admin Panel
+                </span>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-btn"><i class="bi bi-bell"></i><span class="notif-dot"></span></button>
+                <div class="dropdown ms-2">
+                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
+                        <div class="avatar avatar-sm" style="background:var(--danger);color:white;"><i class="bi bi-shield-check" style="font-size:0.8rem;"></i></div>
+                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">Admin</span>
+                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="border-radius:var(--radius-xl);">
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+
+            <!-- Welcome -->
+            <div class="dashboard-welcome">
+                <h1>System Administration ⚙️</h1>
+                <p>Overview of all users, events, and system activity across the platform.</p>
+                <div class="date-badge"><i class="bi bi-calendar3"></i>Sunday, 7 June 2026</div>
+            </div>
+
+            <!-- Admin Stats -->
+            <!-- SECTION FOR BACKEND/DATABASE — adminService.getSystemStats() -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-value" data-count="1248">0</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+48 this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--success-light);color:var(--success);">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div class="stat-value" data-count="352">0</div>
+                    <div class="stat-label">Total Events</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+12 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--accent-50);color:var(--accent);">
+                        <i class="bi bi-megaphone"></i>
+                    </div>
+                    <div class="stat-value" data-count="48">0</div>
+                    <div class="stat-label">Organisers</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+3 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);">
+                        <i class="bi bi-ticket-detailed"></i>
+                    </div>
+                    <div class="stat-value" data-count="9420">0</div>
+                    <div class="stat-label">Total Registrations</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+320 this week</div>
+                </div>
+            </div>
+
+            <div class="row g-5 mb-5">
+                <!-- Quick Stats Secondary -->
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:var(--info-light);color:var(--info);">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div class="stat-value" data-count="23">0</div>
+                        <div class="stat-label">Active Events Now</div>
+                        <div class="stat-change" style="color:var(--text-muted);">Currently live</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:var(--danger-light);color:var(--danger);">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-value" data-count="2">0</div>
+                        <div class="stat-label">Pending Approvals</div>
+                        <div class="stat-change" style="color:var(--danger);">Needs attention</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background:var(--success-light);color:var(--success);">
+                            <i class="bi bi-server"></i>
+                        </div>
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">System Uptime</div>
+                        <div class="stat-change up"><i class="bi bi-check-circle me-1"></i>All systems OK</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Management Table -->
+            <div class="dashboard-table mb-5">
+                <div class="table-header">
+                    <h5><i class="bi bi-people me-2"></i>User Management</h5>
+                    <div class="d-flex gap-2">
+                        <input type="text" class="form-control form-control-sm" placeholder="Search users..." style="width:200px;"/>
+                        <button class="btn btn-sm btn-primary"><i class="bi bi-person-plus me-1"></i>Add User</button>
+                    </div>
+                </div>
+                <!-- SECTION FOR BACKEND/DATABASE -->
+                <!-- th:each="user : ${allUsers}" pagination + search -->
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-xs" style="background:var(--primary);color:white;">A</div>
+                                    <span style="font-weight:var(--font-medium);font-size:var(--text-sm);">Ahmad Danial</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-secondary);">231294@student.upm.edu.my</td>
+                            <td><span class="badge badge-primary">User</span></td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">3 Jun 2025</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-icon btn-sm btn-ghost" title="Edit" data-bs-toggle="tooltip"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" title="Suspend" style="color:var(--warning);" data-bs-toggle="tooltip"><i class="bi bi-pause-circle"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" title="Delete" style="color:var(--danger);" data-bs-toggle="tooltip"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-xs" style="background:var(--accent);color:white;">S</div>
+                                    <span style="font-weight:var(--font-medium);font-size:var(--text-sm);">Siti Norashikin</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-secondary);">siti@staff.upm.edu.my</td>
+                            <td><span class="badge badge-accent">Organiser</span></td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">15 Jan 2025</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-icon btn-sm btn-ghost"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--warning);"><i class="bi bi-pause-circle"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-xs" style="background:var(--success);color:white;">M</div>
+                                    <span style="font-weight:var(--font-medium);font-size:var(--text-sm);">Muhammad Irfan</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-secondary);">210456@student.upm.edu.my</td>
+                            <td><span class="badge badge-primary">User</span></td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">20 Feb 2025</td>
+                            <td><span class="badge badge-warning">Inactive</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-icon btn-sm btn-ghost"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--success);"><i class="bi bi-play-circle"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Pagination -->
+                <div class="p-4 border-top d-flex align-items-center justify-content-between">
+                    <span style="font-size:var(--text-xs);color:var(--text-muted);">Showing 3 of 1,248 users</span>
+                    <div class="d-flex gap-1">
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">‹</button>
+                        <button class="page-btn active" style="width:32px;height:32px;font-size:var(--text-xs);">1</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">2</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">›</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Approval Queue -->
+            <div class="dashboard-table mb-5">
+                <div class="table-header">
+                    <h5>
+                        <i class="bi bi-exclamation-triangle me-2" style="color:var(--warning);"></i>
+                        Pending Event Approvals
+                        <span class="badge badge-danger ms-2">2</span>
+                    </h5>
+                </div>
+                <!-- SECTION FOR BACKEND/DATABASE — events with status=PENDING_REVIEW -->
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Organiser</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="font-weight:var(--font-semibold);">Cybersecurity Hackathon 2025</div>
+                                <span class="badge badge-conference" style="font-size:0.65rem;">Conference</span>
+                            </td>
+                            <td style="font-size:var(--text-sm);">CS Society, UPM</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">2 hours ago</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-success"><i class="bi bi-check me-1"></i>Approve</button>
+                                    <button class="btn btn-sm btn-danger btn-outline-primary" style="border-color:var(--danger);color:var(--danger);">
+                                        <i class="bi bi-x me-1"></i>Reject
+                                    </button>
+                                    <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">View</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="font-weight:var(--font-semibold);">Environmental Awareness Day</div>
+                                <span class="badge badge-social" style="font-size:0.65rem;">Social</span>
+                            </td>
+                            <td style="font-size:var(--text-sm);">Green Campus Club</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">5 hours ago</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-success"><i class="bi bi-check me-1"></i>Approve</button>
+                                    <button class="btn btn-sm" style="border:1.5px solid var(--danger);color:var(--danger);background:transparent;">
+                                        <i class="bi bi-x me-1"></i>Reject
+                                    </button>
+                                    <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">View</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- System Activity Log -->
+            <div class="dashboard-table">
+                <div class="table-header">
+                    <h5><i class="bi bi-journal-text me-2"></i>System Activity Log</h5>
+                    <a href="#" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">View Full Log</a>
+                </div>
+                <div class="p-5">
+                    <!-- SECTION FOR BACKEND/DATABASE — adminService.getActivityLog() -->
+                    <ul class="activity-feed">
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-person-plus"></i></div>
+                            <div class="activity-body">
+                                <div class="activity-text"><strong>New user registered:</strong> Ahmad Danial (User)</div>
+                                <div class="activity-time">2 hours ago · IP: 192.168.1.x</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-calendar-check"></i></div>
+                            <div class="activity-body">
+                                <div class="activity-text"><strong>New event published:</strong> AI Summit 2025 by Siti Norashikin</div>
+                                <div class="activity-time">3 hours ago</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-exclamation-circle"></i></div>
+                            <div class="activity-body">
+                                <div class="activity-text"><strong>Event flagged for review:</strong> Anonymous report on "XYZ Event"</div>
+                                <div class="activity-time">Yesterday at 3:45 PM</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:var(--danger-light);color:var(--danger);"><i class="bi bi-shield-exclamation"></i></div>
+                            <div class="activity-body">
+                                <div class="activity-text"><strong>Failed login attempts:</strong> 3 failed attempts from 10.0.0.55</div>
+                                <div class="activity-time">Yesterday at 11:20 AM</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+/* =============================================
+   variables.css
+   Design System Tokens — Event & Program Tracker
+   ============================================= */
+
+:root {
+
+  /* ── Brand Colors ── */
+  --primary:        #4F46E5;
+  --primary-dark:   #4338CA;
+  --primary-light:  #818CF8;
+  --primary-50:     #EEF2FF;
+  --primary-100:    #E0E7FF;
+
+  --accent:         #7C3AED;
+  --accent-light:   #A78BFA;
+  --accent-50:      #F5F3FF;
+
+  /* ── Semantic Colors ── */
+  --success:        #10B981;
+  --success-dark:   #059669;
+  --success-light:  #D1FAE5;
+
+  --warning:        #F59E0B;
+  --warning-dark:   #D97706;
+  --warning-light:  #FEF3C7;
+
+  --danger:         #EF4444;
+  --danger-dark:    #DC2626;
+  --danger-light:   #FEE2E2;
+
+  --info:           #3B82F6;
+  --info-dark:      #2563EB;
+  --info-light:     #DBEAFE;
+
+  /* ── Category Colors ── */
+  --cat-conference: #8B5CF6;
+  --cat-workshop:   #F59E0B;
+  --cat-seminar:    #3B82F6;
+  --cat-social:     #EC4899;
+  --cat-sports:     #10B981;
+  --cat-cultural:   #EF4444;
+
+  /* ── Neutral Palette ── */
+  --white:     #FFFFFF;
+  --gray-50:   #F8FAFC;
+  --gray-100:  #F1F5F9;
+  --gray-200:  #E2E8F0;
+  --gray-300:  #CBD5E1;
+  --gray-400:  #94A3B8;
+  --gray-500:  #64748B;
+  --gray-600:  #475569;
+  --gray-700:  #334155;
+  --gray-800:  #1E293B;
+  --gray-900:  #0F172A;
+
+  /* ── Background ── */
+  --bg-body:      #F8FAFC;
+  --bg-card:      #FFFFFF;
+  --bg-sidebar:   #0F172A;
+  --bg-overlay:   rgba(15, 23, 42, 0.6);
+
+  /* ── Text ── */
+  --text-primary:   #1E293B;
+  --text-secondary: #64748B;
+  --text-muted:     #94A3B8;
+  --text-inverse:   #FFFFFF;
+  --text-link:      #4F46E5;
+
+  /* ── Border ── */
+  --border-color:   #E2E8F0;
+  --border-light:   #F1F5F9;
+
+  /* ── Typography ── */
+  --font-family:    'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:      'Courier New', monospace;
+
+  --text-xs:    0.75rem;    /* 12px */
+  --text-sm:    0.875rem;   /* 14px */
+  --text-base:  1rem;       /* 16px */
+  --text-lg:    1.125rem;   /* 18px */
+  --text-xl:    1.25rem;    /* 20px */
+  --text-2xl:   1.5rem;     /* 24px */
+  --text-3xl:   1.875rem;   /* 30px */
+  --text-4xl:   2.25rem;    /* 36px */
+  --text-5xl:   3rem;       /* 48px */
+  --text-6xl:   3.75rem;    /* 60px */
+
+  --font-normal:    400;
+  --font-medium:    500;
+  --font-semibold:  600;
+  --font-bold:      700;
+  --font-extrabold: 800;
+
+  --leading-tight:  1.25;
+  --leading-snug:   1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* ── Spacing ── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-7:  1.75rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* ── Border Radius ── */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
+  --radius-2xl:  1.5rem;
+  --radius-3xl:  2rem;
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-xs:  0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm:  0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1),  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl:  0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --shadow-primary:  0 8px 25px rgba(79, 70, 229, 0.35);
+  --shadow-accent:   0 8px 25px rgba(124, 58, 237, 0.35);
+  --shadow-card:     0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-card-hover: 0 8px 30px rgba(0,0,0,0.12);
+
+  /* ── Transitions ── */
+  --transition-fast:   150ms ease;
+  --transition-base:   250ms ease;
+  --transition-slow:   350ms ease;
+  --transition-bounce: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Layout ── */
+  --navbar-height:     70px;
+  --sidebar-width:     260px;
+  --sidebar-collapsed: 72px;
+  --container-max:     1280px;
+  --content-max:       960px;
+
+  /* ── Z-Index ── */
+  --z-base:     1;
+  --z-above:    10;
+  --z-dropdown: 100;
+  --z-sticky:   200;
+  --z-overlay:  500;
+  --z-modal:    1000;
+  --z-toast:    2000;
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  Fragment: sidebar
+  Usage: <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='dashboard')}"></div>
+  Used by: dashboard-user.html, dashboard-organiser.html, dashboard-admin.html
+
+  activeMenu values: 'dashboard', 'events', 'create-event', 'registrations',
+                     'users', 'reports', 'profile', 'settings'
+-->
+
+<!-- ── SIDEBAR OVERLAY (mobile backdrop) ── -->
+<div th:fragment="sidebar-overlay"
+     class="sidebar-overlay"
+     id="sidebarOverlay"
+     onclick="closeSidebar()"></div>
+
+<!-- ── SIDEBAR ── -->
+<aside th:fragment="sidebar(activeMenu, userRole)"
+       class="sidebar"
+       id="sidebar">
+
+    <!-- Brand -->
+    <a class="sidebar-brand" th:href="@{/}">
+        <div class="sidebar-brand-logo">🎯</div>
+        <div>
+            <div class="sidebar-brand-name">EventTracker</div>
+            <div class="sidebar-brand-tagline">Event &amp; Program</div>
+        </div>
+    </a>
+
+    <!-- Navigation -->
+    <ul class="sidebar-nav">
+
+        <!-- ── MAIN ── -->
+        <li><span class="sidebar-section-label">Main</span></li>
+
+        <!-- Dashboard (role-aware) -->
+        <li th:if="${userRole == 'USER' or userRole == null}">
+            <a class="sidebar-link"
+               th:href="@{/dashboard/user}"
+               th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''">
+                <i class="bi bi-speedometer2 link-icon"></i>
+                <span class="link-label">Dashboard</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ORGANISER'}">
+            <a class="sidebar-link"
+               th:href="@{/dashboard/organiser}"
+               th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''">
+                <i class="bi bi-speedometer2 link-icon"></i>
+                <span class="link-label">Dashboard</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ADMIN'}">
+            <a class="sidebar-link"
+               th:href="@{/dashboard/admin}"
+               th:classappend="${activeMenu == 'dashboard'} ? ' active' : ''">
+                <i class="bi bi-speedometer2 link-icon"></i>
+                <span class="link-label">Dashboard</span>
+            </a>
+        </li>
+
+        <!-- Browse Events (all roles) -->
+        <li>
+            <a class="sidebar-link"
+               th:href="@{/events}"
+               th:classappend="${activeMenu == 'events'} ? ' active' : ''">
+                <i class="bi bi-calendar-event link-icon"></i>
+                <span class="link-label">Browse Events</span>
+            </a>
+        </li>
+
+        <!-- ── USER SECTION ── -->
+        <li th:if="${userRole == 'USER' or userRole == null}">
+            <span class="sidebar-section-label">My Activity</span>
+        </li>
+        <li th:if="${userRole == 'USER' or userRole == null}">
+            <a class="sidebar-link"
+               th:href="@{/dashboard/user}"
+               th:classappend="${activeMenu == 'registrations'} ? ' active' : ''">
+                <i class="bi bi-ticket-detailed link-icon"></i>
+                <span class="link-label">My Registrations</span>
+                <span class="link-badge">3</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'USER' or userRole == null}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'saved'} ? ' active' : ''">
+                <i class="bi bi-bookmark link-icon"></i>
+                <span class="link-label">Saved Events</span>
+            </a>
+        </li>
+
+        <!-- ── ORGANISER SECTION ── -->
+        <li th:if="${userRole == 'ORGANISER'}">
+            <span class="sidebar-section-label">Management</span>
+        </li>
+        <li th:if="${userRole == 'ORGANISER'}">
+            <a class="sidebar-link"
+               th:href="@{/events/create}"
+               th:classappend="${activeMenu == 'create-event'} ? ' active' : ''">
+                <i class="bi bi-plus-circle link-icon"></i>
+                <span class="link-label">Create Event</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ORGANISER'}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'my-events'} ? ' active' : ''">
+                <i class="bi bi-calendar3 link-icon"></i>
+                <span class="link-label">My Events</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ORGANISER'}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'registrations'} ? ' active' : ''">
+                <i class="bi bi-people link-icon"></i>
+                <span class="link-label">Registrations</span>
+                <span class="link-badge">12</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ORGANISER'}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'reports'} ? ' active' : ''">
+                <i class="bi bi-bar-chart link-icon"></i>
+                <span class="link-label">Analytics</span>
+            </a>
+        </li>
+
+        <!-- ── ADMIN SECTION ── -->
+        <li th:if="${userRole == 'ADMIN'}">
+            <span class="sidebar-section-label">Administration</span>
+        </li>
+        <li th:if="${userRole == 'ADMIN'}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'users'} ? ' active' : ''">
+                <i class="bi bi-people link-icon"></i>
+                <span class="link-label">Manage Users</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ADMIN'}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'all-events'} ? ' active' : ''">
+                <i class="bi bi-calendar-check link-icon"></i>
+                <span class="link-label">All Events</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ADMIN'}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'reports'} ? ' active' : ''">
+                <i class="bi bi-graph-up link-icon"></i>
+                <span class="link-label">Reports</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ADMIN'}">
+            <a class="sidebar-link"
+               th:href="#"
+               th:classappend="${activeMenu == 'settings'} ? ' active' : ''">
+                <i class="bi bi-gear link-icon"></i>
+                <span class="link-label">System Settings</span>
+            </a>
+        </li>
+
+        <!-- ── SHARED BOTTOM ── -->
+        <li><span class="sidebar-section-label">Account</span></li>
+        <li>
+            <a class="sidebar-link"
+               th:href="@{/profile}"
+               th:classappend="${activeMenu == 'profile'} ? ' active' : ''">
+                <i class="bi bi-person link-icon"></i>
+                <span class="link-label">My Profile</span>
+            </a>
+        </li>
+        <li>
+            <a class="sidebar-link" href="#">
+                <i class="bi bi-bell link-icon"></i>
+                <span class="link-label">Notifications</span>
+                <span class="link-badge">5</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- Sidebar Footer: User Info -->
+    <div class="sidebar-footer">
+        <div class="sidebar-user" data-bs-toggle="dropdown">
+            <!-- PLACEHOLDER: Replace with actual logged-in user data -->
+            <div class="avatar avatar-sm" style="background:var(--primary);color:white;">A</div>
+            <div class="sidebar-user-info">
+                <!-- SECTION FOR BACKEND/DATABASE -->
+                <!-- Dynamic user name/role will be injected here by Security context -->
+                <div class="sidebar-user-name">Ahmad Danial</div>
+                <div class="sidebar-user-role">Student • User</div>
+            </div>
+            <i class="bi bi-three-dots-vertical" style="color:rgba(255,255,255,0.4);font-size:0.8rem;"></i>
+        </div>
+        <!-- User dropdown -->
+        <ul class="dropdown-menu dropdown-menu-dark border-0 shadow-lg mb-2" style="min-width:180px;">
+            <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"/></li>
+            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
+        </ul>
+    </div>
+
+</aside>
+
+</html>

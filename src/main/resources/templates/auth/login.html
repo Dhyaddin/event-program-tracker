@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/auth/login.html
+  Route: GET /auth/login
+  Controller: AuthController.login()
+-->
+
+<head th:replace="~{fragments/head :: head(title='Sign In')}"></head>
+<link rel="stylesheet" th:href="@{/css/auth.css}"/>
+
+<body>
+<div class="auth-page">
+
+    <!-- ══════════════════════════════════════════
+         LEFT PANEL — Branding & Features
+         ══════════════════════════════════════════ -->
+    <div class="auth-panel-left">
+
+        <!-- Decorative circles -->
+        <div class="deco-circle deco-circle-1"></div>
+        <div class="deco-circle deco-circle-2"></div>
+        <div class="deco-circle deco-circle-3"></div>
+
+        <!-- Brand -->
+        <div class="auth-brand">
+            <div class="auth-brand-logo">🎯</div>
+            <span class="auth-brand-name">EventTracker</span>
+        </div>
+
+        <!-- Main Content -->
+        <div class="auth-panel-content">
+            <h2>Welcome back to the<br/>event community</h2>
+            <p>Join thousands of students and organisers managing events seamlessly.</p>
+
+            <ul class="auth-features">
+                <li>
+                    <div class="feature-icon">📅</div>
+                    <span>Discover and register for academic events instantly</span>
+                </li>
+                <li>
+                    <div class="feature-icon">🎟️</div>
+                    <span>Manage all your event tickets in one dashboard</span>
+                </li>
+                <li>
+                    <div class="feature-icon">📊</div>
+                    <span>Track attendance and get real-time event updates</span>
+                </li>
+                <li>
+                    <div class="feature-icon">🔔</div>
+                    <span>Never miss an event with smart notifications</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Testimonial -->
+        <div class="auth-testimonial">
+            <p class="quote-text">"EventTracker made it so easy to organize our faculty's annual tech conference. The registration management alone saved us hours."</p>
+            <div class="quote-author">
+                <div class="avatar avatar-sm" style="background:rgba(255,255,255,0.2);color:white;">S</div>
+                <div>
+                    <div class="author-name">Siti Norashikin</div>
+                    <div class="author-role">Event Organiser · Faculty of CS, UPM</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         RIGHT PANEL — Login Form
+         ══════════════════════════════════════════ -->
+    <div class="auth-panel-right">
+        <div class="auth-form-container fade-in">
+
+            <!-- Form Header -->
+            <div class="auth-form-header">
+                <h1>Sign in to your account</h1>
+                <p>Enter your credentials to access your dashboard.</p>
+            </div>
+
+            <!-- PLACEHOLDER: Show success/error flash messages -->
+            <!-- SECTION FOR BACKEND/DATABASE -->
+            <!-- th:if="${param.logout}" → Show "Logged out" message -->
+            <!-- th:if="${param.error}"  → Show "Invalid credentials" message -->
+
+            <!-- Login Form -->
+            <!--
+                PLACEHOLDER: form action will be handled by Spring Security
+                action="/auth/login" method="POST"
+            -->
+            <form class="auth-form" th:action="@{/auth/login}" method="post" id="loginForm" novalidate>
+
+                <!-- CSRF Token (Spring Security will inject this) -->
+                <!-- th:field will be added when Security is integrated -->
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        <i class="bi bi-envelope me-1"></i>Email Address
+                    </label>
+                    <div class="input-group">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email"
+                               id="email"
+                               name="username"
+                               class="form-control"
+                               placeholder="your@email.com"
+                               value="student@upm.edu.my"
+                               autocomplete="email"
+                               required/>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="bi bi-lock me-1"></i>Password
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password"
+                               id="password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Enter your password"
+                               autocomplete="current-password"
+                               required/>
+                        <button type="button"
+                                class="password-toggle"
+                                id="passToggle"
+                                onclick="togglePassword('password','passToggle')"
+                                aria-label="Toggle password visibility">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me + Forgot Password -->
+                <div class="auth-extras">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberMe" name="remember-me"/>
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Sign In
+                </button>
+
+            </form>
+
+            <!-- Divider -->
+            <div class="divider-text my-5">or continue with</div>
+
+            <!-- Social Login Placeholders -->
+            <div class="d-flex gap-3">
+                <button class="btn btn-outline-primary w-50" style="border-color:var(--border-color);color:var(--text-secondary);"
+                        disabled title="Coming soon">
+                    <img src="https://www.google.com/favicon.ico" width="16" height="16" class="me-2" alt="Google"/>
+                    Google
+                </button>
+                <button class="btn btn-outline-primary w-50" style="border-color:var(--border-color);color:var(--text-secondary);"
+                        disabled title="Coming soon">
+                    <i class="bi bi-microsoft me-2"></i>Microsoft
+                </button>
+            </div>
+            <p style="text-align:center;font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-2);">
+                Social login — coming soon
+            </p>
+
+            <!-- Register Link -->
+            <p class="auth-footer-text">
+                Don't have an account?
+                <a th:href="@{/auth/register}">Create one — it's free</a>
+            </p>
+
+            <!-- Demo Role Links (Frontend Dev Convenience) -->
+            <div style="margin-top:var(--space-6);padding:var(--space-4);background:var(--gray-50);
+                        border-radius:var(--radius-xl);border:1px dashed var(--border-color);">
+                <p style="font-size:var(--text-xs);font-weight:var(--font-semibold);color:var(--text-muted);
+                           text-align:center;margin-bottom:var(--space-3);text-transform:uppercase;letter-spacing:0.05em;">
+                    🛠️ Dev Preview — Quick Navigation
+                </p>
+                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                    <a th:href="@{/dashboard/user}"
+                       class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);font-size:var(--text-xs);">
+                        <i class="bi bi-person"></i> User Dashboard
+                    </a>
+                    <a th:href="@{/dashboard/organiser}"
+                       class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);font-size:var(--text-xs);">
+                        <i class="bi bi-megaphone"></i> Organiser
+                    </a>
+                    <a th:href="@{/dashboard/admin}"
+                       class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);font-size:var(--text-xs);">
+                        <i class="bi bi-shield-check"></i> Admin
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+
+</body>
+</html>

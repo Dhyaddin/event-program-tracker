@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/auth/register.html
+  Route: GET /auth/register
+  Controller: AuthController.register()
+-->
+
+<head th:replace="~{fragments/head :: head(title='Create Account')}"></head>
+<link rel="stylesheet" th:href="@{/css/auth.css}"/>
+
+<body>
+<div class="auth-page">
+
+    <!-- ══════════════════════════════════════════
+         LEFT PANEL — Branding
+         ══════════════════════════════════════════ -->
+    <div class="auth-panel-left">
+
+        <div class="deco-circle deco-circle-1"></div>
+        <div class="deco-circle deco-circle-2"></div>
+        <div class="deco-circle deco-circle-3"></div>
+
+        <div class="auth-brand">
+            <div class="auth-brand-logo">🎯</div>
+            <span class="auth-brand-name">EventTracker</span>
+        </div>
+
+        <div class="auth-panel-content">
+            <h2>Start your event<br/>journey today</h2>
+            <p>Create your free account and join our growing community of students and event organisers.</p>
+
+            <ul class="auth-features">
+                <li>
+                    <div class="feature-icon">✅</div>
+                    <span>Free to register — no credit card needed</span>
+                </li>
+                <li>
+                    <div class="feature-icon">🚀</div>
+                    <span>Set up your profile in under 2 minutes</span>
+                </li>
+                <li>
+                    <div class="feature-icon">🎯</div>
+                    <span>Choose your role: Student or Event Organiser</span>
+                </li>
+                <li>
+                    <div class="feature-icon">🔒</div>
+                    <span>Your data is safe and secure with us</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Stats -->
+        <div style="display:flex;gap:var(--space-6);position:relative;z-index:1;">
+            <div style="text-align:center;">
+                <div style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--white);">1,200+</div>
+                <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.6);">Students</div>
+            </div>
+            <div style="width:1px;background:rgba(255,255,255,0.15);"></div>
+            <div style="text-align:center;">
+                <div style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--white);">350+</div>
+                <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.6);">Events</div>
+            </div>
+            <div style="width:1px;background:rgba(255,255,255,0.15);"></div>
+            <div style="text-align:center;">
+                <div style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--white);">48</div>
+                <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.6);">Organisers</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         RIGHT PANEL — Register Form
+         ══════════════════════════════════════════ -->
+    <div class="auth-panel-right">
+        <div class="auth-form-container fade-in">
+
+            <!-- Form Header -->
+            <div class="auth-form-header">
+                <h1>Create your account</h1>
+                <p>Fill in the details below to get started for free.</p>
+            </div>
+
+            <!-- Register Form -->
+            <!--
+                PLACEHOLDER: form action handled by AuthController POST /auth/register
+                th:action and th:object will be added when backend is implemented
+            -->
+            <form class="auth-form" th:action="@{/auth/register}" method="post" id="registerForm" novalidate>
+
+                <!-- Step 1: Role Selection -->
+                <div class="mb-4">
+                    <label class="form-label">I am a...</label>
+                    <div class="role-selector">
+                        <label class="role-card">
+                            <input type="radio" name="role" value="USER" id="roleUser" checked/>
+                            <div class="role-card-body">
+                                <div class="role-icon">🎓</div>
+                                <h6>Student / User</h6>
+                                <p>Browse &amp; register for events</p>
+                            </div>
+                        </label>
+                        <label class="role-card">
+                            <input type="radio" name="role" value="ORGANISER" id="roleOrganiser"/>
+                            <div class="role-card-body">
+                                <div class="role-icon">📢</div>
+                                <h6>Event Organiser</h6>
+                                <p>Create &amp; manage events</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label class="form-label" for="fullName">Full Name</label>
+                    <div class="input-group">
+                        <i class="bi bi-person input-icon"></i>
+                        <input type="text"
+                               id="fullName"
+                               name="fullName"
+                               class="form-control"
+                               placeholder="Ahmad Danial bin Abdullah"
+                               autocomplete="name"
+                               required/>
+                    </div>
+                </div>
+
+                <!-- Matric / Student ID -->
+                <div class="form-group">
+                    <label class="form-label" for="matricNo">Matric Number / ID</label>
+                    <div class="input-group">
+                        <i class="bi bi-card-text input-icon"></i>
+                        <input type="text"
+                               id="matricNo"
+                               name="matricNo"
+                               class="form-control"
+                               placeholder="e.g. 231294"
+                               required/>
+                    </div>
+                    <div class="form-text">Used for identity verification during event check-in.</div>
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label" for="regEmail">Email Address</label>
+                    <div class="input-group">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email"
+                               id="regEmail"
+                               name="email"
+                               class="form-control"
+                               placeholder="you@upm.edu.my"
+                               autocomplete="email"
+                               required/>
+                    </div>
+                </div>
+
+                <!-- Phone (Optional) -->
+                <div class="form-group">
+                    <label class="form-label" for="phone">
+                        Phone Number <span style="color:var(--text-muted);font-weight:400;">(optional)</span>
+                    </label>
+                    <div class="input-group">
+                        <i class="bi bi-telephone input-icon"></i>
+                        <input type="tel"
+                               id="phone"
+                               name="phone"
+                               class="form-control"
+                               placeholder="+60 12-345 6789"
+                               autocomplete="tel"/>
+                    </div>
+                </div>
+
+                <!-- Password Row -->
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="form-group mb-0">
+                            <label class="form-label" for="regPassword">Password</label>
+                            <div class="password-wrapper">
+                                <input type="password"
+                                       id="regPassword"
+                                       name="password"
+                                       class="form-control"
+                                       placeholder="Min. 8 characters"
+                                       autocomplete="new-password"
+                                       required/>
+                                <button type="button" class="password-toggle"
+                                        id="regPassToggle"
+                                        onclick="togglePassword('regPassword','regPassToggle')">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group mb-0">
+                            <label class="form-label" for="confirmPassword">Confirm</label>
+                            <div class="password-wrapper">
+                                <input type="password"
+                                       id="confirmPassword"
+                                       name="confirmPassword"
+                                       class="form-control"
+                                       placeholder="Re-enter password"
+                                       autocomplete="new-password"
+                                       required/>
+                                <button type="button" class="password-toggle"
+                                        id="confirmPassToggle"
+                                        onclick="togglePassword('confirmPassword','confirmPassToggle')">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-text mb-4 mt-1">Use at least 8 characters with a mix of letters and numbers.</div>
+
+                <!-- Terms Agreement -->
+                <div class="mb-5">
+                    <label class="form-check-custom">
+                        <input type="checkbox" name="agreeTerms" id="agreeTerms" required/>
+                        <label for="agreeTerms">
+                            I agree to the <a href="#">Terms of Service</a> and
+                            <a href="#">Privacy Policy</a>. I consent to receiving event notifications.
+                        </label>
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    <i class="bi bi-person-check"></i>
+                    Create Account
+                </button>
+
+            </form>
+
+            <!-- Login Link -->
+            <p class="auth-footer-text">
+                Already have an account?
+                <a th:href="@{/auth/login}">Sign in instead</a>
+            </p>
+
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+
+<!-- Register-specific validation -->
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const pass    = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        const terms   = document.getElementById('agreeTerms').checked;
+
+        if (pass !== confirm) {
+            e.preventDefault();
+            alert('Passwords do not match. Please re-enter.');
+            return;
+        }
+        if (!terms) {
+            e.preventDefault();
+            alert('You must agree to the Terms of Service to continue.');
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/dashboard/dashboard-organiser.html
+  Route: GET /dashboard/organiser
+  Controller: DashboardController.organiserDashboard()
+  Access: ORGANISER role required
+-->
+
+<head th:replace="~{fragments/head :: head(title='Organiser Dashboard')}"></head>
+<link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+<link rel="stylesheet" th:href="@{/css/event.css}"/>
+
+<body>
+<div class="dashboard-layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='dashboard', userRole='ORGANISER')}"></div>
+
+    <div class="dashboard-main">
+
+        <!-- Topbar -->
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <div class="topbar-search d-none d-md-flex">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" class="form-control" placeholder="Search events, registrations..."/>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <a th:href="@{/events/create}" class="btn btn-primary btn-sm d-none d-md-inline-flex">
+                    <i class="bi bi-plus-circle me-1"></i>New Event
+                </a>
+                <button class="topbar-btn ms-2"><i class="bi bi-bell"></i><span class="notif-dot"></span></button>
+                <div class="dropdown ms-2">
+                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
+                        <div class="avatar avatar-sm" style="background:var(--accent);color:white;">S</div>
+                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">Siti</span>
+                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="border-radius:var(--radius-xl);">
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+
+            <!-- Welcome -->
+            <div class="dashboard-welcome">
+                <!-- SECTION FOR BACKEND/DATABASE — ${organiser.firstName} -->
+                <h1>Organiser Dashboard 🎯</h1>
+                <p>Manage your events, track registrations, and grow your audience.</p>
+                <div class="date-badge"><i class="bi bi-calendar3"></i>Sunday, 7 June 2026</div>
+            </div>
+
+            <!-- Stats -->
+            <!-- SECTION FOR BACKEND/DATABASE — eventService.getOrganizerStats() -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);">
+                        <i class="bi bi-calendar-event"></i>
+                    </div>
+                    <div class="stat-value" data-count="8">0</div>
+                    <div class="stat-label">Total Events Created</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+2 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--success-light);color:var(--success);">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-value" data-count="485">0</div>
+                    <div class="stat-label">Total Attendees</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+67 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="stat-value" data-count="3">0</div>
+                    <div class="stat-label">Active Events</div>
+                    <div class="stat-change" style="color:var(--text-muted);">Currently live</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--info-light);color:var(--info);">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <div class="stat-value" data-count="3240">0</div>
+                    <div class="stat-label">Total Page Views</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+12% this week</div>
+                </div>
+            </div>
+
+            <div class="row g-5">
+
+                <!-- LEFT: My Events Table -->
+                <div class="col-lg-8">
+                    <div class="dashboard-table mb-5">
+                        <div class="table-header">
+                            <h5>My Events</h5>
+                            <a th:href="@{/events/create}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle me-1"></i>New Event
+                            </a>
+                        </div>
+                        <!-- SECTION FOR BACKEND/DATABASE -->
+                        <!-- th:each="event : ${myEvents}" -->
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Event Name</th>
+                                    <th>Date</th>
+                                    <th>Registered</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:var(--font-semibold);">AI &amp; ML Summit 2025</div>
+                                        <span class="badge badge-conference" style="font-size:0.65rem;">Conference</span>
+                                    </td>
+                                    <td style="font-size:var(--text-xs);">15 Jul 2025</td>
+                                    <td>
+                                        <div style="font-weight:var(--font-semibold);color:var(--danger);">280/300</div>
+                                        <div class="capacity-progress mt-1" style="width:100px;">
+                                            <div class="capacity-fill almost-full" style="width:93%;"></div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Published</span></td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a th:href="@{/events/1}" class="btn btn-icon btn-sm btn-ghost" title="View" data-bs-toggle="tooltip">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a th:href="@{/events/1/edit}" class="btn btn-icon btn-sm btn-ghost" title="Edit" data-bs-toggle="tooltip">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:var(--font-semibold);">Creative Design Workshop</div>
+                                        <span class="badge badge-workshop" style="font-size:0.65rem;">Workshop</span>
+                                    </td>
+                                    <td style="font-size:var(--text-xs);">22 Jul 2025</td>
+                                    <td>
+                                        <div style="font-weight:var(--font-semibold);">45/60</div>
+                                        <div class="capacity-progress mt-1" style="width:100px;">
+                                            <div class="capacity-fill" style="width:75%;"></div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Published</span></td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a th:href="@{/events/2}" class="btn btn-icon btn-sm btn-ghost" title="View"><i class="bi bi-eye"></i></a>
+                                            <a th:href="@{/events/2/edit}" class="btn btn-icon btn-sm btn-ghost" title="Edit"><i class="bi bi-pencil"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:var(--font-semibold);">Startup Seminar Season 3</div>
+                                        <span class="badge badge-seminar" style="font-size:0.65rem;">Seminar</span>
+                                    </td>
+                                    <td style="font-size:var(--text-xs);">1 Aug 2025</td>
+                                    <td>
+                                        <div style="font-weight:var(--font-semibold);">120/200</div>
+                                        <div class="capacity-progress mt-1" style="width:100px;">
+                                            <div class="capacity-fill" style="width:60%;"></div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Published</span></td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a th:href="@{/events/3}" class="btn btn-icon btn-sm btn-ghost" title="View"><i class="bi bi-eye"></i></a>
+                                            <a th:href="@{/events/3/edit}" class="btn btn-icon btn-sm btn-ghost" title="Edit"><i class="bi bi-pencil"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="font-weight:var(--font-semibold);">DevOps Conference Draft</div>
+                                        <span class="badge badge-conference" style="font-size:0.65rem;">Conference</span>
+                                    </td>
+                                    <td style="font-size:var(--text-xs);">20 Aug 2025</td>
+                                    <td>
+                                        <div style="color:var(--text-muted);">—</div>
+                                    </td>
+                                    <td><span class="badge badge-gray">Draft</span></td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a href="#" class="btn btn-icon btn-sm btn-ghost" title="Edit"><i class="bi bi-pencil"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Recent Registrations -->
+                    <div class="dashboard-table">
+                        <div class="table-header">
+                            <h5>Recent Registrations</h5>
+                            <a href="#" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">
+                                All <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        <!-- SECTION FOR BACKEND/DATABASE -->
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Attendee</th>
+                                    <th>Event</th>
+                                    <th>Registered</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar avatar-xs" style="background:var(--primary);color:white;">A</div>
+                                            <span style="font-size:var(--text-sm);">Ahmad Danial</span>
+                                        </div>
+                                    </td>
+                                    <td style="font-size:var(--text-sm);">AI Summit 2025</td>
+                                    <td style="font-size:var(--text-xs);color:var(--text-muted);">2 hours ago</td>
+                                    <td><span class="badge badge-success">Confirmed</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar avatar-xs" style="background:var(--accent);color:white;">N</div>
+                                            <span style="font-size:var(--text-sm);">Nurul Ain</span>
+                                        </div>
+                                    </td>
+                                    <td style="font-size:var(--text-sm);">Design Workshop</td>
+                                    <td style="font-size:var(--text-xs);color:var(--text-muted);">5 hours ago</td>
+                                    <td><span class="badge badge-warning">Pending</span></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="avatar avatar-xs" style="background:var(--success);color:white;">M</div>
+                                            <span style="font-size:var(--text-sm);">Muhammad Irfan</span>
+                                        </div>
+                                    </td>
+                                    <td style="font-size:var(--text-sm);">AI Summit 2025</td>
+                                    <td style="font-size:var(--text-xs);color:var(--text-muted);">Yesterday</td>
+                                    <td><span class="badge badge-success">Confirmed</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Sidebar Widgets -->
+                <div class="col-lg-4">
+
+                    <!-- Quick Create -->
+                    <div class="card mb-5" style="background:linear-gradient(135deg,var(--primary),var(--accent));border:none;color:white;">
+                        <div class="card-body text-center p-6">
+                            <div style="font-size:2.5rem;margin-bottom:var(--space-3);">🚀</div>
+                            <h5 style="color:white;font-weight:var(--font-bold);margin-bottom:var(--space-2);">Create New Event</h5>
+                            <p style="color:rgba(255,255,255,0.8);font-size:var(--text-sm);margin-bottom:var(--space-5);">
+                                Ready to host your next event? Get started in minutes.
+                            </p>
+                            <a th:href="@{/events/create}" class="btn"
+                               style="background:white;color:var(--primary);font-weight:var(--font-semibold);">
+                                <i class="bi bi-plus-circle me-1"></i>Create Event
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Top Events Performance -->
+                    <div class="dashboard-table">
+                        <div class="table-header"><h5>Event Performance</h5></div>
+                        <div class="p-5">
+                            <!-- SECTION FOR BACKEND/DATABASE -->
+                            <div class="d-flex flex-column gap-4">
+                                <div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">AI Summit 2025</span>
+                                        <span style="font-size:var(--text-xs);color:var(--danger);font-weight:var(--font-semibold);">93%</span>
+                                    </div>
+                                    <div class="capacity-progress">
+                                        <div class="capacity-fill almost-full" style="width:93%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">Design Workshop</span>
+                                        <span style="font-size:var(--text-xs);color:var(--primary);font-weight:var(--font-semibold);">75%</span>
+                                    </div>
+                                    <div class="capacity-progress">
+                                        <div class="capacity-fill" style="width:75%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">Startup Seminar S3</span>
+                                        <span style="font-size:var(--text-xs);color:var(--primary);font-weight:var(--font-semibold);">60%</span>
+                                    </div>
+                                    <div class="capacity-progress">
+                                        <div class="capacity-fill" style="width:60%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/events/edit-event.html
+  Route: GET /events/{id}/edit
+  Controller: EventController.editEvent()
+  Access: ORGANISER role, must own the event
+-->
+
+<head th:replace="~{fragments/head :: head(title='Edit Event')}"></head>
+<link rel="stylesheet" th:href="@{/css/event.css}"/>
+<link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+
+<body style="background:var(--bg-body);">
+
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container" style="max-width:var(--container-max);">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/dashboard/organiser}">Dashboard</a></li>
+                <li class="breadcrumb-item active">Edit Event</li>
+            </ol>
+        </nav>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h1>Edit Event</h1>
+                <!-- SECTION FOR BACKEND/DATABASE -->
+                <!-- th:text="${event.title}" will show actual event title -->
+                <p>Editing: <strong>AI &amp; Machine Learning Summit 2025</strong></p>
+            </div>
+            <div class="d-flex gap-2">
+                <!-- SECTION FOR BACKEND/DATABASE -->
+                <!-- Link to actual event via ${event.id} -->
+                <a th:href="@{/events/1}" class="btn btn-ghost" style="border:1.5px solid var(--border-color);">
+                    <i class="bi bi-eye me-1"></i>Preview
+                </a>
+                <!-- Delete button — confirmation modal needed -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="bi bi-trash me-1"></i>Delete Event
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-8" style="max-width:var(--container-max);">
+
+    <!-- Status Banner -->
+    <div class="alert alert-warning d-flex align-items-center gap-3 mb-6 auto-dismiss" role="alert">
+        <i class="bi bi-exclamation-triangle-fill" style="font-size:1.2rem;flex-shrink:0;"></i>
+        <div>
+            <strong>You are editing a published event.</strong>
+            Changes will be immediately visible to registered attendees. Registered participants will be notified of major changes.
+        </div>
+    </div>
+
+    <!-- SECTION FOR BACKEND/DATABASE -->
+    <!-- th:action="@{/events/{id}/edit(id=${event.id})}" method="post" -->
+    <!-- th:object="${eventDto}" -->
+    <form th:action="@{/events/1/edit}" method="post" id="editEventForm">
+
+        <div class="create-event-layout">
+
+            <!-- LEFT: FORM (same layout as create, but pre-filled) -->
+            <div>
+
+                <!-- Section 1: Basic Info -->
+                <div class="create-form-section">
+                    <div class="create-form-section-header">
+                        <div class="section-num">1</div>
+                        <h6>Basic Information</h6>
+                    </div>
+                    <div class="create-form-section-body">
+
+                        <div class="mb-4">
+                            <label class="form-label" for="eventTitle">Event Title <span style="color:var(--danger);">*</span></label>
+                            <!-- SECTION FOR BACKEND/DATABASE -->
+                            <!-- th:value="${event.title}" will pre-fill this -->
+                            <input type="text" id="eventTitle" name="title" class="form-control"
+                                   value="AI &amp; Machine Learning Summit 2025" required/>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label" for="eventCategory">Category <span style="color:var(--danger);">*</span></label>
+                            <!-- SECTION FOR BACKEND/DATABASE -->
+                            <!-- th:field="${eventDto.category}" with th:selected will pre-select -->
+                            <select id="eventCategory" name="category" class="form-select" required>
+                                <option value="CONFERENCE" selected>🏛️ Conference</option>
+                                <option value="WORKSHOP">🛠️ Workshop</option>
+                                <option value="SEMINAR">📚 Seminar</option>
+                                <option value="SOCIAL">🎉 Social Event</option>
+                                <option value="SPORTS">⚽ Sports</option>
+                                <option value="CULTURAL">🎭 Cultural</option>
+                                <option value="OTHER">📌 Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="form-label" for="eventDescription">Description <span style="color:var(--danger);">*</span></label>
+                            <!-- SECTION FOR BACKEND/DATABASE -->
+                            <!-- th:text="${event.description}" will pre-fill -->
+                            <textarea id="eventDescription" name="description" class="form-control"
+                                      style="min-height:150px;" required>The AI & Machine Learning Summit 2025 is UPM's premier annual technology conference bringing together students, researchers, and industry professionals to explore the latest advancements in Artificial Intelligence and Machine Learning.</textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Section 2: Date & Time -->
+                <div class="create-form-section">
+                    <div class="create-form-section-header">
+                        <div class="section-num">2</div>
+                        <h6>Date &amp; Time</h6>
+                    </div>
+                    <div class="create-form-section-body">
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <label class="form-label">Start Date</label>
+                                <!-- SECTION FOR BACKEND/DATABASE — pre-fill with event.startDate -->
+                                <input type="date" name="startDate" class="form-control" value="2025-07-15"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">End Date</label>
+                                <input type="date" name="endDate" class="form-control" value="2025-07-15"/>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label">Start Time</label>
+                                <input type="time" name="startTime" class="form-control" value="08:00"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">End Time</label>
+                                <input type="time" name="endTime" class="form-control" value="17:00"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Location -->
+                <div class="create-form-section">
+                    <div class="create-form-section-header">
+                        <div class="section-num">3</div>
+                        <h6>Location</h6>
+                    </div>
+                    <div class="create-form-section-body">
+                        <div class="mb-3">
+                            <label class="form-label">Venue Name</label>
+                            <input type="text" name="venueName" class="form-control"
+                                   value="Dewan Kuliah 5 (DK5)"/>
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label">Full Address</label>
+                            <textarea name="venueAddress" class="form-control" style="min-height:80px;">Faculty of Computer Science and IT, UPM, 43400 Serdang, Selangor</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 4: Capacity & Pricing -->
+                <div class="create-form-section">
+                    <div class="create-form-section-header">
+                        <div class="section-num">4</div>
+                        <h6>Capacity &amp; Pricing</h6>
+                    </div>
+                    <div class="create-form-section-body">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <label class="form-label">Maximum Capacity</label>
+                                <input type="number" name="maxCapacity" class="form-control" value="300"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">Ticket Price (RM)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">RM</span>
+                                    <input type="number" name="price" class="form-control" value="0.00" min="0" step="0.01"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Registered count warning -->
+                        <div class="alert alert-info mt-4 mb-0" style="font-size:var(--text-sm);">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <!-- SECTION FOR BACKEND/DATABASE — dynamic registered count -->
+                            <strong>280 attendees</strong> have already registered. Reducing capacity below this will not cancel existing registrations.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Cover Image -->
+                <div class="create-form-section">
+                    <div class="create-form-section-header">
+                        <div class="section-num">5</div>
+                        <h6>Cover Image</h6>
+                    </div>
+                    <div class="create-form-section-body">
+                        <!-- Current Image Preview -->
+                        <!-- SECTION FOR BACKEND/DATABASE — show event.coverImageUrl if exists -->
+                        <div style="background:linear-gradient(135deg,var(--primary-50),var(--accent-50));
+                                    height:180px;border-radius:var(--radius-xl);
+                                    display:flex;align-items:center;justify-content:center;
+                                    margin-bottom:var(--space-4);position:relative;overflow:hidden;">
+                            <i class="bi bi-cpu" style="font-size:3rem;color:var(--primary);"></i>
+                            <div style="position:absolute;bottom:var(--space-3);left:var(--space-3);">
+                                <span class="badge badge-gray" style="font-size:var(--text-xs);">Current cover image</span>
+                            </div>
+                        </div>
+                        <div class="image-upload-zone" onclick="document.getElementById('newCoverImage').click()">
+                            <div class="upload-icon"><i class="bi bi-cloud-upload"></i></div>
+                            <h6>Upload new cover image</h6>
+                            <p>PNG, JPG, WEBP — Max 5MB</p>
+                            <input type="file" id="newCoverImage" name="coverImage" accept="image/*" style="display:none;"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT: SIDEBAR -->
+            <div class="create-event-sidebar">
+
+                <!-- Update Actions -->
+                <div class="card mb-4">
+                    <div class="card-header"><h6 class="card-title">Update Event</h6></div>
+                    <div class="card-body d-flex flex-column gap-3">
+
+                        <!-- Current Status Badge -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span style="font-size:var(--text-sm);color:var(--text-secondary);">Status</span>
+                            <span class="badge badge-success">Published</span>
+                        </div>
+                        <hr class="my-0"/>
+
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="bi bi-check2-circle me-1"></i>Save Changes
+                        </button>
+                        <button type="button" class="btn btn-ghost btn-block"
+                                style="border:1.5px solid var(--border-color);" onclick="history.back()">
+                            <i class="bi bi-x-circle me-1"></i>Cancel
+                        </button>
+
+                        <hr class="my-1"/>
+
+                        <!-- Change Status -->
+                        <div>
+                            <label class="form-label" style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;">
+                                Change Status
+                            </label>
+                            <select class="form-select form-select-sm" name="status">
+                                <option value="PUBLISHED" selected>🚀 Published</option>
+                                <option value="DRAFT">📝 Move to Draft</option>
+                                <option value="CANCELLED">❌ Cancel Event</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Stats -->
+                <div class="card mb-4">
+                    <div class="card-header"><h6 class="card-title">Current Stats</h6></div>
+                    <div class="card-body d-flex flex-column gap-3">
+                        <!-- SECTION FOR BACKEND/DATABASE — dynamic stats -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="font-size:var(--text-sm);color:var(--text-secondary);">Registered</span>
+                            <strong style="color:var(--primary);">280 / 300</strong>
+                        </div>
+                        <div class="capacity-progress">
+                            <div class="capacity-fill almost-full" style="width:93%;"></div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span style="font-size:var(--text-sm);color:var(--text-secondary);">Page Views</span>
+                            <strong>1,420</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span style="font-size:var(--text-sm);color:var(--text-secondary);">Saved by</span>
+                            <strong>86 users</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header"><h6 class="card-title">Quick Actions</h6></div>
+                    <div class="card-body d-flex flex-column gap-2">
+                        <a href="#" class="btn btn-sm btn-ghost text-start" style="border:1px solid var(--border-color);">
+                            <i class="bi bi-people me-2"></i>View Registrations
+                        </a>
+                        <a href="#" class="btn btn-sm btn-ghost text-start" style="border:1px solid var(--border-color);">
+                            <i class="bi bi-envelope me-2"></i>Email Attendees
+                        </a>
+                        <a href="#" class="btn btn-sm btn-ghost text-start" style="border:1px solid var(--border-color);">
+                            <i class="bi bi-download me-2"></i>Export Attendee List
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius:var(--radius-2xl);overflow:hidden;">
+            <div class="modal-header" style="background:var(--danger-light);border-bottom:1px solid var(--danger-light);">
+                <h5 class="modal-title" style="color:var(--danger-dark);">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Delete Event
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-5">
+                <p style="color:var(--text-secondary);">
+                    Are you sure you want to delete <strong>AI & Machine Learning Summit 2025</strong>?
+                    This action <strong>cannot be undone</strong> and all <strong>280 registrations</strong> will be cancelled.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Cancel</button>
+                <!-- SECTION FOR BACKEND/DATABASE -->
+                <!-- POST /events/{id}/delete handled by EventController -->
+                <form th:action="@{/events/1/delete}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Yes, Delete Event
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+
+</body>
+</html>

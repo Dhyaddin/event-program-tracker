@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  Fragment: scripts
+  Usage: <div th:replace="~{fragments/scripts :: scripts}"></div>
+  Place at the END of <body> on every page.
+-->
+<div th:fragment="scripts">
+
+    <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ============================================
+         GLOBAL UTILITY SCRIPTS
+         ============================================ -->
+    <script>
+        // ── Sidebar Toggle (Dashboard pages) ──────────────
+        function openSidebar() {
+            const sidebar  = document.getElementById('sidebar');
+            const overlay  = document.getElementById('sidebarOverlay');
+            if (sidebar)  sidebar.classList.add('sidebar-open');
+            if (overlay)  overlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            const sidebar  = document.getElementById('sidebar');
+            const overlay  = document.getElementById('sidebarOverlay');
+            if (sidebar)  sidebar.classList.remove('sidebar-open');
+            if (overlay)  overlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar) return;
+            const isOpen  = sidebar.classList.contains('sidebar-open');
+            isOpen ? closeSidebar() : openSidebar();
+        }
+
+        // ── Password Visibility Toggle ─────────────────────
+        function togglePassword(inputId, btnId) {
+            const input = document.getElementById(inputId);
+            const btn   = document.getElementById(btnId);
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                if (btn) btn.innerHTML = '<i class="bi bi-eye-slash"></i>';
+            } else {
+                input.type = 'password';
+                if (btn) btn.innerHTML = '<i class="bi bi-eye"></i>';
+            }
+        }
+
+        // ── Active Nav Link Highlight ──────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
+            const links       = document.querySelectorAll('.nav-link[href]');
+            const currentPath = window.location.pathname;
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && href !== '#' && currentPath.startsWith(href) && href !== '/') {
+                    link.classList.add('active-nav');
+                }
+            });
+        });
+
+        // ── Auto-dismiss Alerts ────────────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
+            const alerts = document.querySelectorAll('.alert.auto-dismiss');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                    if (bsAlert) bsAlert.close();
+                }, 4000);
+            });
+        });
+
+        // ── Scroll-reveal for elements with .reveal class ──
+        document.addEventListener('DOMContentLoaded', function () {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('slide-up');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.1 }
+            );
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+
+        // ── View toggle (event list: grid/list) ───────────
+        function setView(view) {
+            const grid = document.getElementById('eventsGrid');
+            if (!grid) return;
+            const btns = document.querySelectorAll('.view-btn');
+            btns.forEach(b => b.classList.remove('active'));
+
+            if (view === 'list') {
+                grid.classList.add('list-view');
+                document.getElementById('viewList')?.classList.add('active');
+            } else {
+                grid.classList.remove('list-view');
+                document.getElementById('viewGrid')?.classList.add('active');
+            }
+            localStorage.setItem('eventView', view);
+        }
+
+        // Restore saved view preference
+        document.addEventListener('DOMContentLoaded', function () {
+            const saved = localStorage.getItem('eventView');
+            if (saved) setView(saved);
+        });
+
+        // ── Bookmark / Save Event ──────────────────────────
+        function toggleSave(btn) {
+            btn.classList.toggle('saved');
+            const icon = btn.querySelector('i');
+            if (btn.classList.contains('saved')) {
+                icon.className = 'bi bi-bookmark-fill';
+            } else {
+                icon.className = 'bi bi-bookmark';
+            }
+        }
+
+        // ── Smooth counter animation for stats ─────────────
+        function animateCounter(el, target, duration = 1500) {
+            let start  = 0;
+            const step = target / (duration / 16);
+            const timer = setInterval(() => {
+                start += step;
+                if (start >= target) {
+                    el.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    el.textContent = Math.floor(start).toLocaleString();
+                }
+            }, 16);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const counters = document.querySelectorAll('[data-count]');
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el  = entry.target;
+                        const val = parseInt(el.getAttribute('data-count'), 10);
+                        animateCounter(el, val);
+                        obs.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.3 });
+            counters.forEach(c => obs.observe(c));
+        });
+
+        // ── Tooltip init ───────────────────────────────────
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+        });
+
+    </script>
+
+</div>
+
+</html>
