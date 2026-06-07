@@ -467,11 +467,63 @@ textarea.form-control { min-height: 120px; resize: vertical; }
 .fw-semibold { font-weight: var(--font-semibold) !important; }
 .fw-extrabold { font-weight: var(--font-extrabold) !important; }
 
-/* Spacing */
-.gap-1 { gap: var(--space-1); }
-.gap-2 { gap: var(--space-2); }
-.gap-3 { gap: var(--space-3); }
-.gap-4 { gap: var(--space-4); }
+/* Spacing — extended utilities (Bootstrap 5 only goes to 5)  */
+/* Gap */
+.gap-1  { gap: var(--space-1); }
+.gap-2  { gap: var(--space-2); }
+.gap-3  { gap: var(--space-3); }
+.gap-4  { gap: var(--space-4); }
+.gap-5  { gap: var(--space-5); }
+.gap-6  { gap: var(--space-6); }
+.gap-8  { gap: var(--space-8); }
+.gap-10 { gap: var(--space-10); }
+
+/* Padding — custom values beyond Bootstrap's p-5 */
+.p-6  { padding: var(--space-6) !important; }
+.p-8  { padding: var(--space-8) !important; }
+.p-10 { padding: var(--space-10) !important; }
+.p-12 { padding: var(--space-12) !important; }
+
+.py-6  { padding-top: var(--space-6) !important; padding-bottom: var(--space-6) !important; }
+.py-7  { padding-top: var(--space-7) !important; padding-bottom: var(--space-7) !important; }
+.py-8  { padding-top: var(--space-8) !important; padding-bottom: var(--space-8) !important; }
+.py-10 { padding-top: var(--space-10) !important; padding-bottom: var(--space-10) !important; }
+.py-12 { padding-top: var(--space-12) !important; padding-bottom: var(--space-12) !important; }
+.py-16 { padding-top: var(--space-16) !important; padding-bottom: var(--space-16) !important; }
+.py-20 { padding-top: var(--space-20) !important; padding-bottom: var(--space-20) !important; }
+.py-24 { padding-top: var(--space-24) !important; padding-bottom: var(--space-24) !important; }
+
+.px-6  { padding-left: var(--space-6) !important; padding-right: var(--space-6) !important; }
+.px-8  { padding-left: var(--space-8) !important; padding-right: var(--space-8) !important; }
+.px-10 { padding-left: var(--space-10) !important; padding-right: var(--space-10) !important; }
+
+.pt-6  { padding-top: var(--space-6) !important; }
+.pb-6  { padding-bottom: var(--space-6) !important; }
+
+/* Margin — custom values beyond Bootstrap's m-5 */
+.mb-6  { margin-bottom: var(--space-6) !important; }
+.mb-7  { margin-bottom: var(--space-7) !important; }
+.mb-8  { margin-bottom: var(--space-8) !important; }
+.mb-10 { margin-bottom: var(--space-10) !important; }
+.mb-12 { margin-bottom: var(--space-12) !important; }
+.mb-16 { margin-bottom: var(--space-16) !important; }
+
+.mt-6  { margin-top: var(--space-6) !important; }
+.mt-7  { margin-top: var(--space-7) !important; }
+.mt-8  { margin-top: var(--space-8) !important; }
+.mt-10 { margin-top: var(--space-10) !important; }
+.mt-12 { margin-top: var(--space-12) !important; }
+
+.me-6  { margin-right: var(--space-6) !important; }
+.ms-6  { margin-left:  var(--space-6) !important; }
+
+/* Row gutter — custom values beyond Bootstrap's g-5 */
+.g-5  { --bs-gutter-x: var(--space-5); --bs-gutter-y: var(--space-5); }
+.g-6  { --bs-gutter-x: var(--space-6); --bs-gutter-y: var(--space-6); }
+.g-8  { --bs-gutter-x: var(--space-8); --bs-gutter-y: var(--space-8); }
+
+.gy-8 { --bs-gutter-y: var(--space-8); }
+.gx-5 { --bs-gutter-x: var(--space-5); }
 
 /* Borders */
 .rounded-lg  { border-radius: var(--radius-lg) !important; }

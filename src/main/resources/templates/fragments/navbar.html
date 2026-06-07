@@ -54,7 +54,8 @@
                     <a class="nav-link fw-medium px-3"
                        style="color:var(--text-secondary);font-size:var(--text-sm);
                               transition:color var(--transition-fast);border-radius:var(--radius-lg);padding-top:0.5rem;padding-bottom:0.5rem;"
-                       th:href="@{/events}">
+                       th:href="@{/events}"
+                       th:classappend="${currentPage != null && currentPage.startsWith('/events')} ? 'active-nav' : ''">
                         <i class="bi bi-calendar-event me-1"></i>Events
                     </a>
                 </li>

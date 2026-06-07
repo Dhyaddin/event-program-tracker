@@ -2,6 +2,7 @@ package com.eventtracker.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -20,25 +21,25 @@ public class ProfileController {
     }
 
     // ================================================
-    // PLACEHOLDER — TEAMMATE IMPLEMENTATION AREA
-    //
-    // @GetMapping
-    // public String profile(Model model, Principal principal) {
-    //     model.addAttribute("user", userService.findByEmail(principal.getName()));
-    //     return "profile/profile";
-    // }
-    //
-    // @PostMapping("/update")
-    // public String updateProfile(@ModelAttribute UserDto dto) {
-    //     userService.update(dto);
-    //     return "redirect:/profile";
-    // }
-    //
-    // @PostMapping("/change-password")
-    // public String changePassword(@ModelAttribute PasswordDto dto) {
-    //     userService.changePassword(dto);
-    //     return "redirect:/profile";
-    // }
+    // FRONTEND STUBS — Prevents 405 Method Not Allowed
+    // ================================================
+
+    @PostMapping("/update")
+    public String updateProfilePost() {
+        // PLACEHOLDER — userService.update(dto) by teammate
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/change-password")
+    public String changePasswordPost() {
+        // PLACEHOLDER — userService.changePassword(dto) by teammate
+        return "redirect:/profile";
+    }
+
+    // ================================================
+    // TEAMMATE IMPLEMENTATION AREA
+    // Inject UserService and replace the stubs above.
+    // Add Principal/Authentication param for logged-in user.
     // ================================================
 
 }
