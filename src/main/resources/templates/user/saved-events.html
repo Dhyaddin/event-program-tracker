@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/user/saved-events.html
+  Route: GET /my-saved
+  Controller: UserPagesController.savedEvents()
+  Access: USER role
+-->
+
+<head th:replace="~{fragments/head :: head(title='Saved Events')}"></head>
+
+<body>
+<div class="dashboard-layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='saved', userRole='USER')}"></div>
+
+    <div class="dashboard-main">
+
+        <!-- Topbar -->
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0" style="font-size:var(--text-sm);">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard/user}" style="color:var(--primary);text-decoration:none;">Dashboard</a></li>
+                        <li class="breadcrumb-item active" style="color:var(--text-muted);">Saved Events</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <a th:href="@{/events}" class="btn btn-primary btn-sm"><i class="bi bi-search me-1"></i>Browse Events</a>
+                <div class="dropdown ms-2">
+                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
+                        <div class="avatar avatar-sm" style="background:var(--primary);color:white;">A</div>
+                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">Ahmad</span>
+                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="border-radius:var(--radius-xl);">
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+
+            <div class="dashboard-welcome">
+                <h1>Saved Events 🔖</h1>
+                <p>Events you've bookmarked to register later.</p>
+            </div>
+
+            <!-- Stats -->
+            <!-- SECTION FOR BACKEND/DATABASE — savedEventService.getCount(currentUser) -->
+            <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);max-width:600px;margin-bottom:var(--space-8);">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-bookmark-fill"></i></div>
+                    <div class="stat-value" data-count="4">0</div>
+                    <div class="stat-label">Saved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-calendar-event"></i></div>
+                    <div class="stat-value" data-count="3">0</div>
+                    <div class="stat-label">Still Open</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-hourglass-split"></i></div>
+                    <div class="stat-value" data-count="1">0</div>
+                    <div class="stat-label">Closing Soon</div>
+                </div>
+            </div>
+
+            <!-- Saved Cards Grid -->
+            <!-- SECTION FOR BACKEND/DATABASE — th:each="event : ${savedEvents}" -->
+            <div class="row g-5">
+
+                <!-- Card 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="event-card h-100" style="position:relative;">
+                        <div style="height:140px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:var(--radius-lg) var(--radius-lg) 0 0;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;">
+                            🚀
+                            <button onclick="unsaveEvent(this)" title="Remove from saved"
+                                    style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1rem;"
+                                    data-bs-toggle="tooltip">
+                                <i class="bi bi-bookmark-fill"></i>
+                            </button>
+                        </div>
+                        <div class="event-card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge badge-conference" style="font-size:0.65rem;">Conference</span>
+                                <span class="badge" style="background:rgba(16,185,129,0.12);color:var(--success);font-size:0.65rem;">Open</span>
+                            </div>
+                            <h6 style="font-weight:var(--font-semibold);margin-bottom:var(--space-2);">Tech Innovation Summit 2025</h6>
+                            <div style="font-size:var(--text-xs);color:var(--text-muted);display:flex;flex-direction:column;gap:4px;margin-bottom:var(--space-4);">
+                                <span><i class="bi bi-calendar3 me-2"></i>15 July 2025</span>
+                                <span><i class="bi bi-geo-alt me-2"></i>DRB-HICOM Auditorium</span>
+                                <span><i class="bi bi-people me-2"></i>42 / 200 registered</span>
+                            </div>
+                            <a th:href="@{/events/1}" class="btn btn-primary btn-sm w-100">Register Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 — Closing Soon -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="event-card h-100" style="position:relative;border:1.5px solid rgba(245,158,11,0.4);">
+                        <div style="height:140px;background:linear-gradient(135deg,var(--warning),#d97706);border-radius:var(--radius-lg) var(--radius-lg) 0 0;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;">
+                            🏃
+                            <button onclick="unsaveEvent(this)" title="Remove from saved"
+                                    style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--warning);font-size:1rem;"
+                                    data-bs-toggle="tooltip">
+                                <i class="bi bi-bookmark-fill"></i>
+                            </button>
+                            <!-- Closing Soon badge -->
+                            <div style="position:absolute;top:12px;left:12px;background:var(--warning);color:white;font-size:0.6rem;font-weight:var(--font-semibold);padding:3px 8px;border-radius:20px;">
+                                <i class="bi bi-hourglass-split me-1"></i>Closes in 2 days
+                            </div>
+                        </div>
+                        <div class="event-card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge badge-social" style="font-size:0.65rem;">Sports</span>
+                                <span class="badge" style="background:rgba(245,158,11,0.12);color:var(--warning);font-size:0.65rem;">Closing Soon</span>
+                            </div>
+                            <h6 style="font-weight:var(--font-semibold);margin-bottom:var(--space-2);">UPM Sports Carnival 2025</h6>
+                            <div style="font-size:var(--text-xs);color:var(--text-muted);display:flex;flex-direction:column;gap:4px;margin-bottom:var(--space-4);">
+                                <span><i class="bi bi-calendar3 me-2"></i>5 August 2025</span>
+                                <span><i class="bi bi-geo-alt me-2"></i>UPM Stadium</span>
+                                <span><i class="bi bi-people me-2"></i>118 / 150 registered</span>
+                            </div>
+                            <a th:href="@{/events/3}" class="btn btn-sm w-100" style="background:var(--warning);color:white;border:none;border-radius:var(--radius-lg);">Register Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="event-card h-100" style="position:relative;">
+                        <div style="height:140px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:var(--radius-lg) var(--radius-lg) 0 0;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;">
+                            🤖
+                            <button onclick="unsaveEvent(this)" title="Remove from saved"
+                                    style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:1rem;"
+                                    data-bs-toggle="tooltip">
+                                <i class="bi bi-bookmark-fill"></i>
+                            </button>
+                        </div>
+                        <div class="event-card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge badge-workshop" style="font-size:0.65rem;">Workshop</span>
+                                <span class="badge" style="background:rgba(16,185,129,0.12);color:var(--success);font-size:0.65rem;">Open</span>
+                            </div>
+                            <h6 style="font-weight:var(--font-semibold);margin-bottom:var(--space-2);">AI Workshop 2025</h6>
+                            <div style="font-size:var(--text-xs);color:var(--text-muted);display:flex;flex-direction:column;gap:4px;margin-bottom:var(--space-4);">
+                                <span><i class="bi bi-calendar3 me-2"></i>20 August 2025</span>
+                                <span><i class="bi bi-geo-alt me-2"></i>FSKTM Lab 3</span>
+                                <span><i class="bi bi-people me-2"></i>28 / 60 registered</span>
+                            </div>
+                            <a th:href="@{/events/4}" class="btn btn-primary btn-sm w-100">Register Now</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 — Full / Closed -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="event-card h-100" style="position:relative;opacity:0.75;">
+                        <div style="height:140px;background:linear-gradient(135deg,var(--gray-400),var(--gray-600));border-radius:var(--radius-lg) var(--radius-lg) 0 0;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;">
+                            🎓
+                            <button onclick="unsaveEvent(this)" title="Remove from saved"
+                                    style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--gray-600);font-size:1rem;"
+                                    data-bs-toggle="tooltip">
+                                <i class="bi bi-bookmark-fill"></i>
+                            </button>
+                        </div>
+                        <div class="event-card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge badge-seminar" style="font-size:0.65rem;">Seminar</span>
+                                <span class="badge" style="background:rgba(107,114,128,0.12);color:var(--text-muted);font-size:0.65rem;">Registration Closed</span>
+                            </div>
+                            <h6 style="font-weight:var(--font-semibold);margin-bottom:var(--space-2);">Postgraduate Research Day</h6>
+                            <div style="font-size:var(--text-xs);color:var(--text-muted);display:flex;flex-direction:column;gap:4px;margin-bottom:var(--space-4);">
+                                <span><i class="bi bi-calendar3 me-2"></i>10 June 2025</span>
+                                <span><i class="bi bi-geo-alt me-2"></i>UPM Main Hall</span>
+                                <span><i class="bi bi-people me-2"></i>200 / 200 registered</span>
+                            </div>
+                            <button class="btn btn-sm w-100" style="background:var(--gray-200);color:var(--text-muted);border:none;cursor:not-allowed;" disabled>Registration Closed</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+<script>
+    function unsaveEvent(btn) {
+        const card = btn.closest('.col-lg-4, .col-md-6');
+        if (!card) return;
+        btn.innerHTML = '<i class="bi bi-bookmark"></i>';
+        card.style.transition = 'opacity 0.3s';
+        card.style.opacity = '0';
+        setTimeout(() => {
+            card.remove();
+            showComingSoon({ preventDefault:()=>{} }, 'Event removed from saved list.');
+        }, 300);
+    }
+</script>
+</body>
+</html>

@@ -31,7 +31,75 @@
                 <a th:href="@{/events/create}" class="btn btn-primary btn-sm d-none d-md-inline-flex">
                     <i class="bi bi-plus-circle me-1"></i>New Event
                 </a>
-                <button class="topbar-btn ms-2"><i class="bi bi-bell"></i><span class="notif-dot"></span></button>
+                <!-- Notifications Dropdown -->
+                <div class="dropdown ms-2">
+                    <button class="topbar-btn" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="0,8" title="Notifications">
+                        <i class="bi bi-bell"></i><span class="notif-dot"></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-0"
+                         style="width:340px;border-radius:var(--radius-xl);overflow:hidden;">
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3"
+                             style="border-bottom:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Notifications</span>
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none" style="font-size:var(--text-xs);color:var(--primary);">Mark all read</button>
+                        </div>
+                        <div style="max-height:320px;overflow-y:auto;">
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-person-plus-fill" style="color:var(--success);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">New Registration</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>Ahmad Danial</strong> registered for Tech Innovation Summit.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>15 minutes ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-person-plus-fill" style="color:var(--success);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">New Registration</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>Nurul Ain</strong> registered for UPM Research Seminar.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>1 hour ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(79,70,229,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-check-circle-fill" style="color:var(--primary);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Event Approved</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>AI Workshop 2025</strong> has been approved by admin.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>3 hours ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-bar-chart-fill" style="color:var(--warning);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Registration Milestone</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>Sports Carnival</strong> reached 50 registrations!</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>Yesterday</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="text-center py-3" style="border-top:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <a href="#" onclick="showComingSoon(event,'Notifications page coming soon.')"
+                               style="font-size:var(--text-xs);color:var(--primary);text-decoration:none;font-weight:var(--font-medium);">
+                                View all notifications <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="dropdown ms-2">
                     <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
                         <div class="avatar avatar-sm" style="background:var(--accent);color:white;">S</div>

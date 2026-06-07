@@ -162,6 +162,45 @@
             tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
         });
 
+        // ── "Coming soon" toast for placeholder links ───────
+        // Inject toast container once into body
+        (function () {
+            const container = document.createElement('div');
+            container.id    = 'toast-container';
+            container.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;';
+            document.body.appendChild(container);
+        })();
+
+        function showComingSoon(e, msg) {
+            e.preventDefault();
+            const label   = msg || 'This feature is coming soon.';
+            const toast   = document.createElement('div');
+            toast.style.cssText = [
+                'display:flex;align-items:center;gap:12px;',
+                'background:var(--gray-900,#111827);color:white;',
+                'padding:12px 18px;border-radius:12px;',
+                'font-size:0.8rem;font-weight:500;',
+                'box-shadow:0 8px 24px rgba(0,0,0,0.25);',
+                'opacity:0;transform:translateY(8px);',
+                'transition:opacity 0.2s,transform 0.2s;',
+                'max-width:280px;'
+            ].join('');
+            toast.innerHTML = '<i class="bi bi-hourglass-split" style="color:#818cf8;font-size:1rem;flex-shrink:0;"></i>'
+                            + '<span>' + label + '</span>';
+            document.getElementById('toast-container').appendChild(toast);
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.style.opacity   = '1';
+                toast.style.transform = 'translateY(0)';
+            });
+            // Auto-remove after 2.5s
+            setTimeout(() => {
+                toast.style.opacity   = '0';
+                toast.style.transform = 'translateY(8px)';
+                setTimeout(() => toast.remove(), 200);
+            }, 2500);
+        }
+
     </script>
 
 </div>

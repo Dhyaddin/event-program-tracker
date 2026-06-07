@@ -34,13 +34,136 @@
                 </div>
             </div>
             <div class="topbar-right">
-                <button class="topbar-btn" title="Notifications">
-                    <i class="bi bi-bell"></i>
-                    <span class="notif-dot"></span>
-                </button>
-                <button class="topbar-btn" title="Messages">
-                    <i class="bi bi-chat-dots"></i>
-                </button>
+                <!-- Notifications Dropdown -->
+                <div class="dropdown">
+                    <button class="topbar-btn" title="Notifications"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="0,8">
+                        <i class="bi bi-bell"></i>
+                        <span class="notif-dot"></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-0"
+                         style="width:340px;border-radius:var(--radius-xl);overflow:hidden;">
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3"
+                             style="border-bottom:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Notifications</span>
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none" style="font-size:var(--text-xs);color:var(--primary);">Mark all read</button>
+                        </div>
+                        <div style="max-height:320px;overflow-y:auto;">
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(79,70,229,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-check-circle-fill" style="color:var(--primary);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Registration Confirmed</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">Your seat for <strong>Tech Innovation Summit</strong> is confirmed.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>2 hours ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-calendar-event-fill" style="color:var(--success);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Event Reminder</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>UPM Research Seminar</strong> starts tomorrow at 9:00 AM.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>5 hours ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-star-fill" style="color:var(--warning);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">New Event Available</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>AI Workshop 2025</strong> is now open for registration.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>Yesterday</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-exclamation-circle-fill" style="color:var(--danger);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Deadline Approaching</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">Registration for <strong>Sports Carnival</strong> closes in 2 days.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>2 days ago</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="text-center py-3" style="border-top:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <a href="#" onclick="showComingSoon(event,'Notifications page coming soon.')"
+                               style="font-size:var(--text-xs);color:var(--primary);text-decoration:none;font-weight:var(--font-medium);">
+                                View all notifications <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Dropdown -->
+                <div class="dropdown">
+                    <button class="topbar-btn" title="Messages"
+                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="0,8">
+                        <i class="bi bi-chat-dots"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-0"
+                         style="width:320px;border-radius:var(--radius-xl);overflow:hidden;">
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3"
+                             style="border-bottom:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Messages</span>
+                            <span class="badge" style="background:var(--primary);font-size:0.65rem;">2 new</span>
+                        </div>
+                        <div style="max-height:280px;overflow-y:auto;">
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
+                                <div class="avatar avatar-sm" style="background:var(--accent);color:white;flex-shrink:0;">S</div>
+                                <div style="min-width:0;">
+                                    <div class="d-flex justify-content-between">
+                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Siti Organiser</span>
+                                        <span style="font-size:var(--text-xs);color:var(--text-muted);">10m</span>
+                                    </div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Your registration has been confirmed!</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
+                                <div class="avatar avatar-sm" style="background:var(--danger);color:white;flex-shrink:0;">A</div>
+                                <div style="min-width:0;">
+                                    <div class="d-flex justify-content-between">
+                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Admin</span>
+                                        <span style="font-size:var(--text-xs);color:var(--text-muted);">1h</span>
+                                    </div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Welcome to EventTracker! Please complete your profile.</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div class="avatar avatar-sm" style="background:var(--success);color:white;flex-shrink:0;">E</div>
+                                <div style="min-width:0;">
+                                    <div class="d-flex justify-content-between">
+                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">EventBot</span>
+                                        <span style="font-size:var(--text-xs);color:var(--text-muted);">2d</span>
+                                    </div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Reminder: Tech Innovation Summit is in 3 days.</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="text-center py-3" style="border-top:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <a href="#" onclick="showComingSoon(event,'Messages page coming soon.')"
+                               style="font-size:var(--text-xs);color:var(--primary);text-decoration:none;font-weight:var(--font-medium);">
+                                View all messages <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="dropdown ms-2">
                     <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
                         <div class="avatar avatar-sm" style="background:var(--primary);color:white;">A</div>

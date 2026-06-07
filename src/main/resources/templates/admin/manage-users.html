@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/admin/manage-users.html
+  Route: GET /admin/users
+  Controller: AdminPagesController.manageUsers()
+  Access: ADMIN role
+-->
+
+<head th:replace="~{fragments/head :: head(title='Manage Users')}"></head>
+
+<body>
+<div class="dashboard-layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='users', userRole='ADMIN')}"></div>
+
+    <div class="dashboard-main">
+
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0" style="font-size:var(--text-sm);">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard/admin}" style="color:var(--primary);text-decoration:none;">Admin Dashboard</a></li>
+                        <li class="breadcrumb-item active" style="color:var(--text-muted);">Manage Users</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);" onclick="showComingSoon(event,'CSV export coming soon.')"><i class="bi bi-download me-1"></i>Export</button>
+                <button class="btn btn-sm btn-primary ms-2" onclick="showComingSoon(event,'Add user feature coming soon.')"><i class="bi bi-person-plus me-1"></i>Add User</button>
+                <div class="dropdown ms-2">
+                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
+                        <div class="avatar avatar-sm" style="background:var(--danger);color:white;"><i class="bi bi-shield-check" style="font-size:0.8rem;"></i></div>
+                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">Admin</span>
+                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="border-radius:var(--radius-xl);">
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+
+            <div class="dashboard-welcome">
+                <h1>Manage Users 👤</h1>
+                <p>View, edit, suspend, or remove user accounts from the platform.</p>
+            </div>
+
+            <!-- Stats -->
+            <!-- SECTION FOR BACKEND/DATABASE — userService.getSystemStats() -->
+            <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-people"></i></div>
+                    <div class="stat-value" data-count="1248">0</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+48 this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-person-check"></i></div>
+                    <div class="stat-value" data-count="1185">0</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--accent-50);color:var(--accent);"><i class="bi bi-megaphone"></i></div>
+                    <div class="stat-value" data-count="48">0</div>
+                    <div class="stat-label">Organisers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-pause-circle"></i></div>
+                    <div class="stat-value" data-count="15">0</div>
+                    <div class="stat-label">Suspended</div>
+                </div>
+            </div>
+
+            <!-- Filters + Table -->
+            <div class="dashboard-table mb-5">
+                <div class="table-header">
+                    <div class="d-flex gap-2 flex-wrap align-items-center">
+                        <select class="form-select form-select-sm" style="width:auto;" onchange="filterUsers(this.value,'role')">
+                            <option value="all">All Roles</option>
+                            <option value="User">User</option>
+                            <option value="Organiser">Organiser</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <select class="form-select form-select-sm" style="width:auto;" onchange="filterUsers(this.value,'status')">
+                            <option value="all">All Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Suspended">Suspended</option>
+                        </select>
+                    </div>
+                    <input type="text" class="form-control form-control-sm" placeholder="Search name or email..." style="width:220px;" oninput="searchUsers(this.value)"/>
+                </div>
+
+                <!-- SECTION FOR BACKEND/DATABASE — th:each="user : ${allUsers}" pagination -->
+                <table class="table-custom" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Last Active</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-xs" style="background:var(--primary);color:white;">A</div>
+                                    <span style="font-weight:var(--font-medium);font-size:var(--text-sm);">Ahmad Danial</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-secondary);">231294@student.upm.edu.my</td>
+                            <td><span class="badge badge-primary">User</span></td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">3 Jun 2025</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">Today</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-icon btn-sm btn-ghost" title="Edit" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Edit user coming soon.')"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" title="Suspend" style="color:var(--warning);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Suspend feature coming soon.')"><i class="bi bi-pause-circle"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" title="Delete" style="color:var(--danger);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Delete user coming soon.')"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-xs" style="background:var(--accent);color:white;">S</div>
+                                    <span style="font-weight:var(--font-medium);font-size:var(--text-sm);">Siti Norashikin</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-secondary);">siti@staff.upm.edu.my</td>
+                            <td><span class="badge badge-accent">Organiser</span></td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">15 Jan 2025</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">2 hours ago</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-icon btn-sm btn-ghost" onclick="showComingSoon(event,'Edit user coming soon.')"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--warning);" onclick="showComingSoon(event,'Suspend feature coming soon.')"><i class="bi bi-pause-circle"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" onclick="showComingSoon(event,'Delete user coming soon.')"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-xs" style="background:var(--success);color:white;">M</div>
+                                    <span style="font-weight:var(--font-medium);font-size:var(--text-sm);">Muhammad Irfan</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-secondary);">210456@student.upm.edu.my</td>
+                            <td><span class="badge badge-primary">User</span></td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">20 Feb 2025</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">3 days ago</td>
+                            <td><span class="badge badge-warning">Inactive</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-icon btn-sm btn-ghost" onclick="showComingSoon(event,'Edit user coming soon.')"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--success);" onclick="showComingSoon(event,'Activate feature coming soon.')"><i class="bi bi-play-circle"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" onclick="showComingSoon(event,'Delete user coming soon.')"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-xs" style="background:var(--danger);color:white;">H</div>
+                                    <span style="font-weight:var(--font-medium);font-size:var(--text-sm);">Haziq Mukhriz</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-secondary);">haziq@student.upm.edu.my</td>
+                            <td><span class="badge badge-primary">User</span></td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">10 Mar 2025</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);">1 week ago</td>
+                            <td><span class="badge" style="background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);">Suspended</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-icon btn-sm btn-ghost" onclick="showComingSoon(event,'Edit user coming soon.')"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--success);" onclick="showComingSoon(event,'Unsuspend feature coming soon.')"><i class="bi bi-play-circle"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" onclick="showComingSoon(event,'Delete user coming soon.')"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="p-4 border-top d-flex align-items-center justify-content-between">
+                    <span style="font-size:var(--text-xs);color:var(--text-muted);">Showing 4 of 1,248 users</span>
+                    <div class="d-flex gap-1">
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">‹</button>
+                        <button class="page-btn active" style="width:32px;height:32px;font-size:var(--text-xs);">1</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">2</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">...</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">50</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">›</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+<script>
+    function searchUsers(q) {
+        const term = q.toLowerCase();
+        document.querySelectorAll('#usersTable tbody tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        });
+    }
+    function filterUsers(val, type) {
+        if (val === 'all') {
+            document.querySelectorAll('#usersTable tbody tr').forEach(r => r.style.display = '');
+        } else {
+            document.querySelectorAll('#usersTable tbody tr').forEach(row => {
+                row.style.display = row.textContent.includes(val) ? '' : 'none';
+            });
+        }
+    }
+</script>
+</body>
+</html>

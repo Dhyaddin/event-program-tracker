@@ -27,7 +27,75 @@
                 </span>
             </div>
             <div class="topbar-right">
-                <button class="topbar-btn"><i class="bi bi-bell"></i><span class="notif-dot"></span></button>
+                <!-- Notifications Dropdown -->
+                <div class="dropdown">
+                    <button class="topbar-btn" data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="0,8" title="Notifications">
+                        <i class="bi bi-bell"></i><span class="notif-dot"></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-0"
+                         style="width:340px;border-radius:var(--radius-xl);overflow:hidden;">
+                        <div class="d-flex align-items-center justify-content-between px-4 py-3"
+                             style="border-bottom:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);">System Notifications</span>
+                            <button class="btn btn-link btn-sm p-0 text-decoration-none" style="font-size:var(--text-xs);color:var(--primary);">Mark all read</button>
+                        </div>
+                        <div style="max-height:320px;overflow-y:auto;">
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);background:rgba(239,68,68,0.04);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(239,68,68,0.04)'">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(239,68,68,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-person-fill-add" style="color:var(--danger);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">New User Registered</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>Haziq Mukhriz</strong> created a new account.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>5 minutes ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);background:rgba(245,158,11,0.04);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(245,158,11,0.04)'">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-calendar-plus-fill" style="color:var(--warning);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Event Pending Approval</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>Data Science Bootcamp</strong> submitted by Siti Organiser.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>30 minutes ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               style="border-bottom:1px solid var(--border-color);"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(79,70,229,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-shield-exclamation" style="color:var(--primary);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">System Alert</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">3 events are awaiting approval. Review required.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>2 hours ago</div>
+                                </div>
+                            </a>
+                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
+                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
+                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-graph-up-arrow" style="color:var(--success);font-size:0.9rem;"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Registration Surge</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">Total registrations up 24% this week.</div>
+                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>Today</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="text-center py-3" style="border-top:1px solid var(--border-color);background:var(--bg-secondary);">
+                            <a href="#" onclick="showComingSoon(event,'Notifications page coming soon.')"
+                               style="font-size:var(--text-xs);color:var(--primary);text-decoration:none;font-weight:var(--font-medium);">
+                                View all notifications <i class="bi bi-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <div class="dropdown ms-2">
                     <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
                         <div class="avatar avatar-sm" style="background:var(--danger);color:white;"><i class="bi bi-shield-check" style="font-size:0.8rem;"></i></div>
@@ -246,11 +314,15 @@
                             <td style="font-size:var(--text-xs);color:var(--text-muted);">2 hours ago</td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-success"><i class="bi bi-check me-1"></i>Approve</button>
-                                    <button class="btn btn-sm btn-danger btn-outline-primary" style="border-color:var(--danger);color:var(--danger);">
+                                    <button class="btn btn-sm" style="background:var(--success);color:white;border:none;border-radius:var(--radius-lg);font-weight:var(--font-medium);"
+                                            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                                        <i class="bi bi-check me-1"></i>Approve
+                                    </button>
+                                    <button class="btn btn-sm" style="border:1.5px solid var(--danger);color:var(--danger);background:transparent;border-radius:var(--radius-lg);font-weight:var(--font-medium);"
+                                            onmouseover="this.style.background='var(--danger)';this.style.color='white'" onmouseout="this.style.background='transparent';this.style.color='var(--danger)'">
                                         <i class="bi bi-x me-1"></i>Reject
                                     </button>
-                                    <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">View</button>
+                                    <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);border-radius:var(--radius-lg);">View</button>
                                 </div>
                             </td>
                         </tr>
@@ -263,11 +335,15 @@
                             <td style="font-size:var(--text-xs);color:var(--text-muted);">5 hours ago</td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-success"><i class="bi bi-check me-1"></i>Approve</button>
-                                    <button class="btn btn-sm" style="border:1.5px solid var(--danger);color:var(--danger);background:transparent;">
+                                    <button class="btn btn-sm" style="background:var(--success);color:white;border:none;border-radius:var(--radius-lg);font-weight:var(--font-medium);"
+                                            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                                        <i class="bi bi-check me-1"></i>Approve
+                                    </button>
+                                    <button class="btn btn-sm" style="border:1.5px solid var(--danger);color:var(--danger);background:transparent;border-radius:var(--radius-lg);font-weight:var(--font-medium);"
+                                            onmouseover="this.style.background='var(--danger)';this.style.color='white'" onmouseout="this.style.background='transparent';this.style.color='var(--danger)'">
                                         <i class="bi bi-x me-1"></i>Reject
                                     </button>
-                                    <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">View</button>
+                                    <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);border-radius:var(--radius-lg);">View</button>
                                 </div>
                             </td>
                         </tr>

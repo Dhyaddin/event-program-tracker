@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/admin/all-events.html
+  Route: GET /admin/events
+  Controller: AdminPagesController.allEvents()
+  Access: ADMIN role
+-->
+
+<head th:replace="~{fragments/head :: head(title='All Events')}"></head>
+
+<body>
+<div class="dashboard-layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='events', userRole='ADMIN')}"></div>
+
+    <div class="dashboard-main">
+
+        <header class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0" style="font-size:var(--text-sm);">
+                        <li class="breadcrumb-item"><a th:href="@{/dashboard/admin}" style="color:var(--primary);text-decoration:none;">Admin Dashboard</a></li>
+                        <li class="breadcrumb-item active" style="color:var(--text-muted);">All Events</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <button class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);" onclick="showComingSoon(event,'Export events coming soon.')"><i class="bi bi-download me-1"></i>Export</button>
+                <div class="dropdown ms-2">
+                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
+                        <div class="avatar avatar-sm" style="background:var(--danger);color:white;"><i class="bi bi-shield-check" style="font-size:0.8rem;"></i></div>
+                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">Admin</span>
+                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="border-radius:var(--radius-xl);">
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
+                        <li><hr class="dropdown-divider"/></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+
+            <div class="dashboard-welcome">
+                <h1>All Events 📋</h1>
+                <p>Platform-wide event management — approve, reject, edit or remove events.</p>
+            </div>
+
+            <!-- Stats -->
+            <!-- SECTION FOR BACKEND/DATABASE — eventService.getPlatformStats() -->
+            <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-calendar3"></i></div>
+                    <div class="stat-value" data-count="84">0</div>
+                    <div class="stat-label">Total Events</div>
+                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+7 this week</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-broadcast"></i></div>
+                    <div class="stat-value" data-count="34">0</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-hourglass-split"></i></div>
+                    <div class="stat-value" data-count="12">0</div>
+                    <div class="stat-label">Pending Approval</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:rgba(239,68,68,0.1);color:var(--danger);"><i class="bi bi-x-circle"></i></div>
+                    <div class="stat-value" data-count="5">0</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            </div>
+
+            <!-- Filters + Table -->
+            <div class="dashboard-table mb-5">
+                <div class="table-header">
+                    <div class="d-flex gap-2 flex-wrap align-items-center">
+                        <button class="btn btn-sm btn-primary" onclick="filterAdminEvents(this,'all')">All</button>
+                        <button class="btn btn-sm btn-ghost" onclick="filterAdminEvents(this,'active')" style="border:1px solid var(--border-color);">Active</button>
+                        <button class="btn btn-sm btn-ghost" onclick="filterAdminEvents(this,'pending')" style="border:1px solid var(--border-color);">Pending</button>
+                        <button class="btn btn-sm btn-ghost" onclick="filterAdminEvents(this,'draft')" style="border:1px solid var(--border-color);">Draft</button>
+                        <button class="btn btn-sm btn-ghost" onclick="filterAdminEvents(this,'ended')" style="border:1px solid var(--border-color);">Ended</button>
+                    </div>
+                    <input type="text" class="form-control form-control-sm" placeholder="Search event or organiser..." style="width:220px;" oninput="searchAdminEvents(this.value)"/>
+                </div>
+
+                <!-- SECTION FOR BACKEND/DATABASE — th:each="event : ${allPlatformEvents}" -->
+                <table class="table-custom" id="adminEventsTable">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Organiser</th>
+                            <th>Date</th>
+                            <th>Registrations</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-status="active">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:38px;height:38px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🚀</div>
+                                    <div>
+                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Tech Innovation Summit 2025</div>
+                                        <span class="badge badge-conference" style="font-size:0.6rem;">Conference</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">Siti Norashikin</td>
+                            <td style="font-size:var(--text-sm);">15 Jul 2025</td>
+                            <td style="font-size:var(--text-sm);font-weight:var(--font-medium);">42 / 200</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a th:href="@{/events/1}" class="btn btn-icon btn-sm btn-ghost" title="View"><i class="bi bi-eye"></i></a>
+                                    <button class="btn btn-icon btn-sm btn-ghost" onclick="showComingSoon(event,'Edit feature coming soon.')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" onclick="showComingSoon(event,'Remove event coming soon.')" title="Remove"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-status="pending">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:38px;height:38px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--warning),#d97706);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🤖</div>
+                                    <div>
+                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">AI Workshop 2025</div>
+                                        <span class="badge badge-workshop" style="font-size:0.6rem;">Workshop</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">Ahmad Fauzi</td>
+                            <td style="font-size:var(--text-sm);">20 Aug 2025</td>
+                            <td style="font-size:var(--text-sm);color:var(--text-muted);">— / 60</td>
+                            <td><span class="badge" style="background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3);">Pending</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button class="btn btn-sm" style="background:var(--success);color:white;border:none;border-radius:var(--radius-lg);padding:4px 10px;font-size:0.75rem;font-weight:var(--font-medium);"
+                                            onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'"
+                                            onclick="showComingSoon(event,'Approve feature coming soon.')">
+                                        <i class="bi bi-check me-1"></i>Approve
+                                    </button>
+                                    <button class="btn btn-sm" style="border:1.5px solid var(--danger);color:var(--danger);background:transparent;border-radius:var(--radius-lg);padding:4px 10px;font-size:0.75rem;font-weight:var(--font-medium);"
+                                            onmouseover="this.style.background='var(--danger)';this.style.color='white'"
+                                            onmouseout="this.style.background='transparent';this.style.color='var(--danger)'"
+                                            onclick="showComingSoon(event,'Reject feature coming soon.')">
+                                        <i class="bi bi-x me-1"></i>Reject
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-status="active">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:38px;height:38px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--success),#059669);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🧪</div>
+                                    <div>
+                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">UPM Research Seminar</div>
+                                        <span class="badge badge-seminar" style="font-size:0.6rem;">Seminar</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">Siti Norashikin</td>
+                            <td style="font-size:var(--text-sm);">22 Jul 2025</td>
+                            <td style="font-size:var(--text-sm);font-weight:var(--font-medium);">87 / 120</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a th:href="@{/events/2}" class="btn btn-icon btn-sm btn-ghost" title="View"><i class="bi bi-eye"></i></a>
+                                    <button class="btn btn-icon btn-sm btn-ghost" onclick="showComingSoon(event,'Edit feature coming soon.')" title="Edit"><i class="bi bi-pencil"></i></button>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" onclick="showComingSoon(event,'Remove event coming soon.')" title="Remove"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr data-status="ended">
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div style="width:38px;height:38px;border-radius:var(--radius-lg);background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">💼</div>
+                                    <div>
+                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Career Fair UPM 2024</div>
+                                        <span class="badge badge-conference" style="font-size:0.6rem;">Conference</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">Siti Norashikin</td>
+                            <td style="font-size:var(--text-sm);">5 Nov 2024</td>
+                            <td style="font-size:var(--text-sm);font-weight:var(--font-medium);">105 / 120</td>
+                            <td><span class="badge" style="background:rgba(107,114,128,0.12);color:var(--text-muted);">Ended</span></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a th:href="@{/events/5}" class="btn btn-icon btn-sm btn-ghost" title="View"><i class="bi bi-eye"></i></a>
+                                    <button class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" onclick="showComingSoon(event,'Remove event coming soon.')" title="Remove"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="p-4 border-top d-flex align-items-center justify-content-between">
+                    <span style="font-size:var(--text-xs);color:var(--text-muted);">Showing 4 of 84 events</span>
+                    <div class="d-flex gap-1">
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">‹</button>
+                        <button class="page-btn active" style="width:32px;height:32px;font-size:var(--text-xs);">1</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">2</button>
+                        <button class="page-btn" style="width:32px;height:32px;font-size:var(--text-xs);">›</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+<script>
+    function filterAdminEvents(btn, status) {
+        document.querySelectorAll('.table-header .btn-sm').forEach(b => {
+            if (b.getAttribute('onclick') && b.getAttribute('onclick').includes('filterAdminEvents')) {
+                b.className = 'btn btn-sm btn-ghost';
+                b.style.border = '1px solid var(--border-color)';
+            }
+        });
+        btn.className = 'btn btn-sm btn-primary';
+        btn.style.border = '';
+        document.querySelectorAll('#adminEventsTable tbody tr').forEach(row => {
+            row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+        });
+    }
+    function searchAdminEvents(q) {
+        const term = q.toLowerCase();
+        document.querySelectorAll('#adminEventsTable tbody tr').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+        });
+    }
+</script>
+</body>
+</html>
