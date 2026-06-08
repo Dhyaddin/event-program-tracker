@@ -19,13 +19,13 @@ public class AuthController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "login";
+        return "auth/login";
     }
 
     @GetMapping("/register")
     public String registerPage(Model model) {
         model.addAttribute("user", new User());   // Empty user object for the form
-        return "register";
+        return "auth/register";
     }
 
     @PostMapping("/register")
@@ -36,17 +36,17 @@ public class AuthController {
             RedirectAttributes redirectAttributes) {
 
         if (result.hasErrors()) {
-            return "register";
+            return "auth/register";
         }
 
         if (userService.emailExists(user.getEmail())) {
             model.addAttribute("emailError", "This email is already registered.");
-            return "register";
+            return "auth/register";
         }
 
         userService.registerUser(user);
         redirectAttributes.addFlashAttribute("successMessage",
                 "Account created! Please log in.");
-        return "redirect:login";
+        return "redirect:/auth/login";
     }
 }
