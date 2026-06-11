@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <!--
   File: src/main/resources/templates/events/event-details.html
@@ -33,16 +34,24 @@
                 </ol>
             </nav>
             <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
-                <span class="badge badge-conference" style="font-size:var(--text-xs);padding:0.375rem 0.875rem;">Conference</span>
+                <span class="badge badge-conference" style="font-size:var(--text-xs);padding:0.375rem 0.875rem;"
+                      th:text="${event.category ?: 'General'}">Category</span>
                 <span class="badge badge-success" style="font-size:var(--text-xs);padding:0.375rem 0.875rem;">
-                    <i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i>Open for Registration
+                    <i class="bi bi-circle-fill me-1" style="font-size:0.5rem;"></i>
+                    <span th:text="${event.status.name()}">Open</span>
                 </span>
             </div>
-            <h1 class="event-title">AI &amp; Machine Learning Summit 2025</h1>
+            <h1 class="event-title" th:text="${event.title}">Event Title</h1>
             <div class="d-flex align-items-center gap-4 flex-wrap" style="color:rgba(255,255,255,0.8);font-size:var(--text-sm);">
-                <span><i class="bi bi-calendar3 me-2"></i>Tuesday, 15 July 2025</span>
-                <span><i class="bi bi-clock me-2"></i>8:00 AM – 5:00 PM</span>
-                <span><i class="bi bi-geo-alt me-2"></i>DK5, Faculty of Computer Science &amp; IT, UPM</span>
+                <span><i class="bi bi-calendar3 me-2"></i>
+                    <span th:text="${#temporals.format(event.eventDate, 'EEEE, dd MMMM yyyy')}">Date</span>
+                </span>
+                <span th:if="${event.eventTime}"><i class="bi bi-clock me-2"></i>
+                    <span th:text="${#temporals.format(event.eventTime, 'hh:mm a')}">Time</span>
+                </span>
+                <span><i class="bi bi-geo-alt me-2"></i>
+                    <span th:text="${event.location ?: 'TBC'}">Location</span>
+                </span>
             </div>
         </div>
     </div>
@@ -61,14 +70,12 @@
             <div class="d-flex align-items-center justify-content-between p-4 mb-6 rounded-3"
                  style="background:var(--bg-card);border:1px solid var(--border-color);box-shadow:var(--shadow-card);">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="avatar avatar-md" style="background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-size:1.2rem;">C</div>
+                    <div class="avatar avatar-md" style="background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-size:1.2rem;"
+                         th:text="${event.organizer != null ? event.organizer.name.substring(0,1).toUpperCase() : '?'}">O</div>
                     <div>
                         <div style="font-size:var(--text-xs);color:var(--text-muted);">Organised by</div>
-                        <!-- SECTION FOR BACKEND/DATABASE -->
-                        <!-- Dynamic organiser name will be injected -->
-                        <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-primary);">
-                            Computer Science Society, UPM
-                        </div>
+                        <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-primary);"
+                             th:text="${event.organizer != null ? event.organizer.name : 'Unknown'}">Organiser</div>
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-3">
@@ -85,22 +92,8 @@
             <div class="card mb-5">
                 <div class="card-header"><h5 class="card-title"><i class="bi bi-info-circle me-2 text-primary-color"></i>About This Event</h5></div>
                 <div class="card-body">
-                    <!-- SECTION FOR BACKEND/DATABASE -->
-                    <!-- Dynamic event description from database -->
-                    <p style="line-height:var(--leading-relaxed);">
-                        The <strong>AI &amp; Machine Learning Summit 2025</strong> is UPM's premier annual technology conference bringing together students, researchers, and industry professionals to explore the latest advancements in Artificial Intelligence and Machine Learning.
-                    </p>
-                    <p style="line-height:var(--leading-relaxed);">
-                        This full-day event features keynote speeches from leading AI researchers, hands-on technical workshops, research paper presentations, and networking sessions. Whether you're a beginner curious about AI or an advanced researcher in the field, this summit has something for everyone.
-                    </p>
-                    <h6 class="mt-4 mb-3" style="font-weight:var(--font-semibold);">What you will learn:</h6>
-                    <ul style="color:var(--text-secondary);line-height:2;padding-left:var(--space-5);">
-                        <li>Latest trends in deep learning and neural networks</li>
-                        <li>Practical AI applications in healthcare, finance, and agriculture</li>
-                        <li>Introduction to Large Language Models (LLMs)</li>
-                        <li>AI ethics and responsible AI development</li>
-                        <li>How to start your career in AI research</li>
-                    </ul>
+                    <p style="line-height:var(--leading-relaxed);white-space:pre-wrap;"
+                       th:text="${event.description ?: 'No description provided.'}">Description</p>
                 </div>
             </div>
 
@@ -194,20 +187,22 @@
             <div class="event-info-panel">
                 <!-- Price Header -->
                 <div class="event-info-header">
-                    <div class="event-info-price free">FREE</div>
-                    <div style="font-size:var(--text-xs);color:var(--text-muted);">Open to all UPM students</div>
+                    <div class="event-info-price"
+                         th:classappend="${event.free} ? 'free' : ''"
+                         th:text="${event.free ? 'FREE' : 'RM ' + event.price}">FREE</div>
+                    <div style="font-size:var(--text-xs);color:var(--text-muted);"
+                         th:text="${event.free ? 'Free entry' : 'Per person'}">Free entry</div>
 
                     <!-- Capacity Bar -->
-                    <div class="mt-4">
+                    <div class="mt-4" th:if="${event.capacity > 0}">
                         <div class="d-flex justify-content-between mb-2">
                             <span style="font-size:var(--text-xs);color:var(--text-secondary);">Capacity</span>
-                            <span style="font-size:var(--text-xs);font-weight:var(--font-semibold);color:var(--danger);">280 / 300 registered</span>
+                            <span style="font-size:var(--text-xs);font-weight:var(--font-semibold);"
+                                  th:text="${registrationCount + ' / ' + event.capacity + ' registered'}">0 / 0</span>
                         </div>
                         <div class="capacity-progress">
-                            <div class="capacity-fill almost-full" style="width:93%;"></div>
-                        </div>
-                        <div style="font-size:var(--text-xs);color:var(--danger);margin-top:4px;font-weight:var(--font-medium);">
-                            <i class="bi bi-fire me-1"></i>Only 20 seats remaining!
+                            <div class="capacity-fill"
+                                 th:style="'width:' + ${event.capacity > 0 ? (registrationCount * 100 / event.capacity) : 0} + '%;'"></div>
                         </div>
                     </div>
                 </div>
@@ -218,53 +213,71 @@
                         <div class="event-info-icon"><i class="bi bi-calendar3"></i></div>
                         <div class="event-info-text">
                             <div class="event-info-label">Date</div>
-                            <div class="event-info-value">Tuesday, 15 July 2025</div>
+                            <div class="event-info-value"
+                                 th:text="${#temporals.format(event.eventDate, 'EEEE, dd MMMM yyyy')}">Date</div>
                         </div>
                     </div>
-                    <div class="event-info-item">
+                    <div class="event-info-item" th:if="${event.eventTime}">
                         <div class="event-info-icon"><i class="bi bi-clock"></i></div>
                         <div class="event-info-text">
                             <div class="event-info-label">Time</div>
-                            <div class="event-info-value">8:00 AM – 5:00 PM (9 hours)</div>
+                            <div class="event-info-value"
+                                 th:text="${#temporals.format(event.eventTime, 'hh:mm a')}">Time</div>
                         </div>
                     </div>
                     <div class="event-info-item">
                         <div class="event-info-icon"><i class="bi bi-geo-alt"></i></div>
                         <div class="event-info-text">
                             <div class="event-info-label">Venue</div>
-                            <div class="event-info-value">DK5, Faculty of CS, UPM</div>
+                            <div class="event-info-value" th:text="${event.location ?: 'TBC'}">Location</div>
                         </div>
                     </div>
-                    <div class="event-info-item">
+                    <div class="event-info-item" th:if="${event.organizer != null}">
                         <div class="event-info-icon"><i class="bi bi-person-badge"></i></div>
                         <div class="event-info-text">
                             <div class="event-info-label">Organiser</div>
-                            <div class="event-info-value">CS Society, UPM</div>
-                        </div>
-                    </div>
-                    <div class="event-info-item">
-                        <div class="event-info-icon"><i class="bi bi-award"></i></div>
-                        <div class="event-info-text">
-                            <div class="event-info-label">Certificate</div>
-                            <div class="event-info-value">e-Certificate provided</div>
+                            <div class="event-info-value" th:text="${event.organizer.name}">Organiser</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- CTA -->
                 <div class="event-info-footer">
-                    <!-- SECTION FOR BACKEND/DATABASE -->
-                    <!-- Registration POST /events/{id}/register will be handled by EventController -->
-                    <a th:href="@{/auth/login}" class="btn btn-primary btn-lg btn-block mb-3">
-                        <i class="bi bi-ticket-detailed me-2"></i>Register Now
-                    </a>
-                    <button class="btn btn-ghost btn-block" style="color:var(--text-secondary);" onclick="toggleSave(this)">
-                        <i class="bi bi-bookmark me-2"></i>Save for Later
-                    </button>
-                    <!-- Note for non-logged-in users -->
-                    <p style="font-size:var(--text-xs);color:var(--text-muted);text-align:center;margin-top:var(--space-3);">
-                        <a th:href="@{/auth/login}" style="color:var(--primary);">Sign in</a> to register for this event
-                    </p>
+
+                    <!-- NOT logged in: show login link -->
+                    <div sec:authorize="!isAuthenticated()">
+                        <a th:href="@{/auth/login}" class="btn btn-primary btn-lg btn-block mb-3">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Register
+                        </a>
+                        <p style="font-size:var(--text-xs);color:var(--text-muted);text-align:center;margin-top:var(--space-3);">
+                            <a th:href="@{/auth/login}" style="color:var(--primary);">Sign in</a> to register for this event
+                        </p>
+                    </div>
+
+                    <!-- Logged in + already registered: show cancel -->
+                    <div sec:authorize="isAuthenticated()" th:if="${isRegistered}">
+                        <div style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;
+                                    border-radius:var(--radius-lg);padding:var(--space-3);
+                                    margin-bottom:var(--space-3);font-size:var(--text-sm);text-align:center;">
+                            <i class="bi bi-check-circle-fill me-2"></i>You are registered!
+                        </div>
+                        <form th:action="@{/events/{id}/cancel-registration(id=${event.id})}" method="post">
+                            <button type="submit" class="btn btn-block"
+                                    style="border:1px solid var(--danger);color:var(--danger);background:transparent;width:100%;">
+                                <i class="bi bi-x-circle me-2"></i>Cancel Registration
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Logged in + not registered: show register -->
+                    <div sec:authorize="isAuthenticated()" th:if="${!isRegistered}">
+                        <form th:action="@{/events/{id}/register(id=${event.id})}" method="post">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block mb-3" style="width:100%;">
+                                <i class="bi bi-ticket-detailed me-2"></i>Register Now
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
 

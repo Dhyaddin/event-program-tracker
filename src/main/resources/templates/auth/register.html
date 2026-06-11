@@ -82,12 +82,27 @@
                 <p>Fill in the details below to get started for free.</p>
             </div>
 
+            <!-- Flash messages (outside form — model attribute checks only) -->
+            <div th:if="${emailError}"
+                 style="background:#fef2f2;color:#991b1b;border:1px solid #fecaca;
+                        border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+                        margin-bottom:var(--space-4);font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span th:text="${emailError}">Email already registered.</span>
+            </div>
+
             <!-- Register Form -->
-            <!--
-                PLACEHOLDER: form action handled by AuthController POST /auth/register
-                th:action and th:object will be added when backend is implemented
-            -->
-            <form class="auth-form" th:action="@{/auth/register}" method="post" id="registerForm" novalidate>
+            <form class="auth-form" th:action="@{/auth/register}" th:object="${user}"
+                  method="post" id="registerForm" novalidate>
+
+                <!-- Validation error summary (inside th:object scope so #fields works) -->
+                <div th:if="${#fields.hasErrors('*')}"
+                     style="background:#fef2f2;color:#991b1b;border:1px solid #fecaca;
+                            border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+                            margin-bottom:var(--space-4);font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    Please fill in all required fields correctly.
+                </div>
 
                 <!-- Step 1: Role Selection -->
                 <div class="mb-4">
@@ -102,7 +117,7 @@
                             </div>
                         </label>
                         <label class="role-card">
-                            <input type="radio" name="role" value="ORGANISER" id="roleOrganiser"/>
+                            <input type="radio" name="role" value="ORGANIZER" id="roleOrganizer"/>
                             <div class="role-card-body">
                                 <div class="role-icon">📢</div>
                                 <h6>Event Organiser</h6>
@@ -112,14 +127,14 @@
                     </div>
                 </div>
 
-                <!-- Full Name -->
+                <!-- Full Name — field must match User.name -->
                 <div class="form-group">
                     <label class="form-label" for="fullName">Full Name</label>
                     <div class="input-group">
                         <i class="bi bi-person input-icon"></i>
                         <input type="text"
                                id="fullName"
-                               name="fullName"
+                               name="name"
                                class="form-control"
                                placeholder="Ahmad Danial bin Abdullah"
                                autocomplete="name"

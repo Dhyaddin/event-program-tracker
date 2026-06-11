@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <!--
   Fragment: navbar
@@ -100,19 +101,41 @@
 
             </ul>
 
-            <!-- Auth Buttons -->
+            <!-- Auth Buttons — changes based on login state -->
             <div class="navbar-auth d-flex align-items-center gap-2">
-                <a th:href="@{/auth/login}"
-                   class="btn btn-ghost btn-sm"
-                   style="color:var(--text-secondary);">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Sign In
-                </a>
-                <a th:href="@{/auth/register}"
-                   class="btn btn-primary btn-sm">
-                    <i class="bi bi-person-plus"></i>
-                    Get Started
-                </a>
+
+                <!-- NOT logged in -->
+                <div sec:authorize="!isAuthenticated()" class="d-flex align-items-center gap-2">
+                    <a th:href="@{/auth/login}"
+                       class="btn btn-ghost btn-sm"
+                       style="color:var(--text-secondary);">
+                        <i class="bi bi-box-arrow-in-right"></i> Sign In
+                    </a>
+                    <a th:href="@{/auth/register}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-person-plus"></i> Get Started
+                    </a>
+                </div>
+
+                <!-- Logged in -->
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
+                    <span style="font-size:var(--text-sm);color:var(--text-secondary);">
+                        <i class="bi bi-person-circle me-1"></i>
+                        <span sec:authentication="name"></span>
+                    </span>
+                    <a th:href="@{/dashboard}"
+                       class="btn btn-ghost btn-sm"
+                       style="color:var(--text-secondary);">
+                        <i class="bi bi-grid me-1"></i> Dashboard
+                    </a>
+                    <form th:action="@{/auth/logout}" method="post" style="margin:0;">
+                        <button type="submit"
+                                class="btn btn-sm"
+                                style="border:1px solid var(--border-color);color:var(--danger);background:transparent;">
+                            <i class="bi bi-box-arrow-right me-1"></i> Logout
+                        </button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>

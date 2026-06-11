@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <!--
   Fragment: sidebar
@@ -189,29 +190,31 @@
 
     </ul>
 
-    <!-- Sidebar Footer: User Info -->
+    <!-- Sidebar Footer: User Info (wired from Spring Security context) -->
     <div class="sidebar-footer">
-        <!-- Bootstrap 5 requires button or anchor for dropdown toggle, NOT a plain div -->
         <button type="button"
                 class="sidebar-user w-100 border-0 bg-transparent text-start"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-            <!-- PLACEHOLDER: Replace with actual logged-in user data -->
-            <div class="avatar avatar-sm" style="background:var(--primary);color:white;">A</div>
+            <div class="avatar avatar-sm" style="background:var(--primary);color:white;"
+                 th:text="${user != null ? #strings.substring(user.name,0,1).toUpperCase() : 'U'}">U</div>
             <div class="sidebar-user-info">
-                <!-- SECTION FOR BACKEND/DATABASE -->
-                <!-- Dynamic user name/role will be injected here by Security context -->
-                <div class="sidebar-user-name">Ahmad Danial</div>
-                <div class="sidebar-user-role">Student • User</div>
+                <div class="sidebar-user-name" th:text="${user != null ? user.name : 'User'}">User</div>
+                <div class="sidebar-user-role" th:text="${userRole != null ? userRole : 'User'}">User</div>
             </div>
             <i class="bi bi-three-dots-vertical" style="color:rgba(255,255,255,0.4);font-size:0.8rem;"></i>
         </button>
         <!-- User dropdown -->
         <ul class="dropdown-menu dropdown-menu-dark border-0 shadow-lg mb-2" style="min-width:180px;">
             <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
             <li><hr class="dropdown-divider"/></li>
-            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
+            <li>
+                <form th:action="@{/auth/logout}" method="post" style="margin:0;">
+                    <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start">
+                        <i class="bi bi-box-arrow-left me-2"></i>Sign Out
+                    </button>
+                </form>
+            </li>
         </ul>
     </div>
 

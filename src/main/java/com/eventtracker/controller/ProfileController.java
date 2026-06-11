@@ -1,45 +1,49 @@
 package com.eventtracker.controller;
 
+import com.eventtracker.entity.User;
+import com.eventtracker.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * ProfileController
- * Routes: User Profile Page
- *
- * FRONTEND ONLY — No service or repository logic.
- */
 @Controller
 @RequestMapping("/profile")
+@RequiredArgsConstructor
 public class ProfileController {
 
+    private final UserService userService;
+
     @GetMapping
-    public String profile() {
+    public String profilePage(
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model) {
+
+        User user = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        model.addAttribute("user", user);
         return "profile/profile";
     }
 
-    // ================================================
-    // FRONTEND STUBS — Prevents 405 Method Not Allowed
-    // ================================================
-
     @PostMapping("/update")
-    public String updateProfilePost() {
-        // PLACEHOLDER — userService.update(dto) by teammate
+    public String updateProfile(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @ModelAttribute User updatedUser,
+            RedirectAttributes redirectAttributes) {
+
+        User existing = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Only update non-sensitive fields — never update email or password here
+        existing.setName(updatedUser.getName());
+        existing.setPhone(updatedUser.getPhone());
+
+        userService.updateUser(existing);
+        redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
         return "redirect:/profile";
     }
-
-    @PostMapping("/change-password")
-    public String changePasswordPost() {
-        // PLACEHOLDER — userService.changePassword(dto) by teammate
-        return "redirect:/profile";
-    }
-
-    // ================================================
-    // TEAMMATE IMPLEMENTATION AREA
-    // Inject UserService and replace the stubs above.
-    // Add Principal/Authentication param for logged-in user.
-    // ================================================
-
 }

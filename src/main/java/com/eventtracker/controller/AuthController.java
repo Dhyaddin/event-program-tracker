@@ -1,55 +1,52 @@
 package com.eventtracker.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.eventtracker.entity.User;
+import com.eventtracker.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * AuthController
- * Routes: Login, Register
- *
- * FRONTEND ONLY — No authentication logic.
- * Authentication will be implemented by teammates via Spring Security.
- */
 @Controller
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
+    private final UserService userService;
+
     @GetMapping("/login")
-    public String login() {
+    public String loginPage() {
         return "auth/login";
     }
 
     @GetMapping("/register")
-    public String register() {
+    public String registerPage(Model model) {
+        model.addAttribute("user", new User());   // Empty user object for the form
         return "auth/register";
     }
 
-    // ================================================
-    // FRONTEND STUB — Prevents 405 Method Not Allowed
-    // These redirects simulate success for UI testing.
-    // Teammates will replace with real Spring Security.
-    // ================================================
-
-    @PostMapping("/login")
-    public String loginPost() {
-        // PLACEHOLDER — Spring Security will intercept this POST instead
-        // For now, redirect to user dashboard to simulate login success
-        return "redirect:/dashboard/user";
-    }
-
     @PostMapping("/register")
-    public String registerPost() {
-        // PLACEHOLDER — UserService.register() will be implemented by teammate
-        // For now, redirect to login page to simulate successful registration
+    public String registerUser(
+            @Valid @ModelAttribute("user") User user,
+            BindingResult result,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        if (result.hasErrors()) {
+            return "auth/register";
+        }
+
+        if (userService.emailExists(user.getEmail())) {
+            model.addAttribute("emailError", "This email is already registered.");
+            return "auth/register";
+        }
+
+        userService.registerUser(user);
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Account created! Please log in.");
         return "redirect:/auth/login";
     }
-
-    // ================================================
-    // TEAMMATE IMPLEMENTATION AREA
-    // POST /auth/logout  → Spring Security will handle
-    // ================================================
-
 }
