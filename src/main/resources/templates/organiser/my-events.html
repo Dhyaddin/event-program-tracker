@@ -18,33 +18,7 @@
 
     <div class="dashboard-main">
 
-        <!-- Topbar -->
-        <header class="dashboard-topbar">
-            <div class="topbar-left">
-                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0" style="font-size:var(--text-sm);">
-                        <li class="breadcrumb-item"><a th:href="@{/dashboard/organiser}" style="color:var(--primary);text-decoration:none;">Dashboard</a></li>
-                        <li class="breadcrumb-item active" style="color:var(--text-muted);">My Events</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="topbar-right">
-                <a th:href="@{/events/create}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle me-1"></i>New Event</a>
-                <div class="dropdown ms-2">
-                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
-                        <div class="avatar avatar-sm" style="background:var(--accent);color:white;">S</div>
-                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">Siti</span>
-                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="border-radius:var(--radius-xl);">
-                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
-                        <li><hr class="dropdown-divider"/></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>
+        <header th:replace="~{fragments/topbar :: topbar('My Events')}"></header>
 
         <main class="dashboard-content">
 
@@ -53,43 +27,27 @@
                 <p>Manage all events you've created. Track registrations and performance.</p>
             </div>
 
-            <!-- Stats -->
-            <!-- SECTION FOR BACKEND/DATABASE — eventService.getOrganiserStats(currentUser) -->
-            <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
+            <!-- Stats (live) -->
+            <div class="stats-grid" style="grid-template-columns:repeat(2,minmax(0,260px));">
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-calendar3"></i></div>
-                    <div class="stat-value" data-count="6">0</div>
+                    <div class="stat-value" th:text="${totalMyEvents}">0</div>
                     <div class="stat-label">Total Events</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-broadcast"></i></div>
-                    <div class="stat-value" data-count="2">0</div>
-                    <div class="stat-label">Live / Active</div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-icon" style="background:var(--accent-50);color:var(--accent);"><i class="bi bi-people"></i></div>
-                    <div class="stat-value" data-count="234">0</div>
+                    <div class="stat-value" th:text="${totalRegistrations}">0</div>
                     <div class="stat-label">Total Registrations</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-graph-up"></i></div>
-                    <div class="stat-value">78%</div>
-                    <div class="stat-label">Avg. Fill Rate</div>
                 </div>
             </div>
 
-            <!-- Filters + Table -->
-            <div class="dashboard-table mb-5">
+            <!-- Table -->
+            <div class="dashboard-table mb-5 mt-5">
                 <div class="table-header">
-                    <div class="d-flex gap-2 flex-wrap">
-                        <button class="btn btn-sm btn-primary" onclick="filterEvents(this,'all')">All</button>
-                        <button class="btn btn-sm btn-ghost" onclick="filterEvents(this,'active')" style="border:1px solid var(--border-color);">Active</button>
-                        <button class="btn btn-sm btn-ghost" onclick="filterEvents(this,'draft')" style="border:1px solid var(--border-color);">Draft</button>
-                        <button class="btn btn-sm btn-ghost" onclick="filterEvents(this,'ended')" style="border:1px solid var(--border-color);">Ended</button>
-                    </div>
+                    <h5>My Events</h5>
                     <div class="d-flex gap-2">
                         <input type="text" class="form-control form-control-sm" placeholder="Search events..." style="width:200px;" oninput="searchEvents(this.value)"/>
-                        <a th:href="@{/events/create}" class="btn btn-primary btn-sm d-none d-md-flex align-items-center gap-1"><i class="bi bi-plus-circle"></i>New</a>
+                        <a th:href="@{/events/create}" th:unless="${isPendingOrganiser}" class="btn btn-primary btn-sm d-none d-md-flex align-items-center gap-1"><i class="bi bi-plus-circle"></i>New</a>
                     </div>
                 </div>
 
@@ -106,123 +64,47 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-status="active">
+                        <tr th:each="event : ${myEvents}">
                             <td>
                                 <div class="d-flex align-items-center gap-3">
-                                    <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🚀</div>
+                                    <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;color:white;">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </div>
                                     <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Tech Innovation Summit 2025</div>
-                                        <span class="badge badge-conference" style="font-size:0.6rem;">Conference</span>
+                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);" th:text="${event.title}">Title</div>
+                                        <span class="badge badge-conference" style="font-size:0.6rem;" th:text="${event.category != null ? event.category : 'General'}">Cat</span>
                                     </div>
                                 </div>
                             </td>
-                            <td style="font-size:var(--text-sm);">15 Jul 2025</td>
+                            <td style="font-size:var(--text-sm);" th:text="${event.eventDate != null ? #temporals.format(event.eventDate,'d MMM yyyy') : 'TBA'}">Date</td>
+                            <td><div style="font-size:var(--text-sm);font-weight:var(--font-medium);" th:text="${regCounts[event.id]} + ' / ' + ${event.capacity}">0 / 0</div></td>
                             <td>
-                                <div style="font-size:var(--text-sm);font-weight:var(--font-medium);">42 / 200</div>
-                            </td>
-                            <td>
-                                <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="display:flex;align-items:center;gap:8px;" th:with="rate=${event.capacity > 0 ? (regCounts[event.id] * 100 / event.capacity) : 0}">
                                     <div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;">
-                                        <div style="width:21%;height:100%;background:var(--primary);border-radius:3px;"></div>
+                                        <div style="height:100%;background:var(--primary);border-radius:3px;" th:style="'width:' + ${rate} + '%'"></div>
                                     </div>
-                                    <span style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;">21%</span>
+                                    <span style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;" th:text="${rate} + '%'">0%</span>
                                 </div>
                             </td>
-                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <span class="badge badge-success" th:if="${event.status.name() == 'UPCOMING' or event.status.name() == 'ONGOING'}" th:text="${event.status}">Active</span>
+                                <span class="badge" style="background:rgba(107,114,128,0.12);color:var(--text-muted);" th:if="${event.status.name() == 'COMPLETED'}">Completed</span>
+                                <span class="badge" style="background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);" th:if="${event.status.name() == 'CANCELLED'}">Cancelled</span>
+                            </td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <a th:href="@{/events/1}" class="btn btn-icon btn-sm btn-ghost" title="View" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <a th:href="@{/events/1/edit}" class="btn btn-icon btn-sm btn-ghost" title="Edit" data-bs-toggle="tooltip"><i class="bi bi-pencil"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="View Registrations" data-bs-toggle="tooltip" onclick="window.location.href='[[${'/organiser/registrations'}]]'"><i class="bi bi-people"></i></button>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Delete" style="color:var(--danger);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Delete feature coming soon.')"><i class="bi bi-trash"></i></button>
+                                    <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-icon btn-sm btn-ghost" title="View"><i class="bi bi-eye"></i></a>
+                                    <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-icon btn-sm btn-ghost" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a th:href="@{/organiser/registrations}" class="btn btn-icon btn-sm btn-ghost" title="View Registrations"><i class="bi bi-people"></i></a>
+                                    <form th:action="@{/events/{id}/delete(id=${event.id})}" method="post"
+                                          onsubmit="return confirm('Delete this event and all its registrations?');" class="m-0">
+                                        <button type="submit" class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" title="Delete"><i class="bi bi-trash"></i></button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
-                        <tr data-status="active">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--success),#059669);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🧪</div>
-                                    <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">UPM Research Seminar</div>
-                                        <span class="badge badge-seminar" style="font-size:0.6rem;">Seminar</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-size:var(--text-sm);">22 Jul 2025</td>
-                            <td><div style="font-size:var(--text-sm);font-weight:var(--font-medium);">87 / 120</div></td>
-                            <td>
-                                <div style="display:flex;align-items:center;gap:8px;">
-                                    <div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;">
-                                        <div style="width:73%;height:100%;background:var(--success);border-radius:3px;"></div>
-                                    </div>
-                                    <span style="font-size:var(--text-xs);color:var(--text-muted);">73%</span>
-                                </div>
-                            </td>
-                            <td><span class="badge badge-success">Active</span></td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a th:href="@{/events/2}" class="btn btn-icon btn-sm btn-ghost" title="View" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <a th:href="@{/events/2/edit}" class="btn btn-icon btn-sm btn-ghost" title="Edit" data-bs-toggle="tooltip"><i class="bi bi-pencil"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Delete" style="color:var(--danger);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Delete feature coming soon.')"><i class="bi bi-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-status="draft">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--gray-400),var(--gray-500));display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">📝</div>
-                                    <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Data Science Bootcamp</div>
-                                        <span class="badge badge-workshop" style="font-size:0.6rem;">Workshop</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-size:var(--text-sm);">10 Sep 2025</td>
-                            <td><div style="font-size:var(--text-sm);color:var(--text-muted);">— / 50</div></td>
-                            <td>
-                                <div style="display:flex;align-items:center;gap:8px;">
-                                    <div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;">
-                                        <div style="width:0%;height:100%;background:var(--gray-400);border-radius:3px;"></div>
-                                    </div>
-                                    <span style="font-size:var(--text-xs);color:var(--text-muted);">0%</span>
-                                </div>
-                            </td>
-                            <td><span class="badge" style="background:rgba(107,114,128,0.12);color:var(--text-secondary);">Draft</span></td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a th:href="@{/events/3/edit}" class="btn btn-icon btn-sm btn-ghost" title="Edit" data-bs-toggle="tooltip"><i class="bi bi-pencil"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Publish" style="color:var(--success);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Publish feature coming soon.')"><i class="bi bi-broadcast"></i></button>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Delete" style="color:var(--danger);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Delete feature coming soon.')"><i class="bi bi-trash"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-status="ended">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div style="width:40px;height:40px;border-radius:var(--radius-lg);background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">💼</div>
-                                    <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Career Fair UPM 2024</div>
-                                        <span class="badge badge-conference" style="font-size:0.6rem;">Conference</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-size:var(--text-sm);">5 Nov 2024</td>
-                            <td><div style="font-size:var(--text-sm);font-weight:var(--font-medium);">105 / 120</div></td>
-                            <td>
-                                <div style="display:flex;align-items:center;gap:8px;">
-                                    <div style="flex:1;height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;">
-                                        <div style="width:88%;height:100%;background:var(--accent);border-radius:3px;"></div>
-                                    </div>
-                                    <span style="font-size:var(--text-xs);color:var(--text-muted);">88%</span>
-                                </div>
-                            </td>
-                            <td><span class="badge" style="background:rgba(107,114,128,0.12);color:var(--text-muted);">Ended</span></td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a th:href="@{/events/5}" class="btn btn-icon btn-sm btn-ghost" title="View" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="View Report" data-bs-toggle="tooltip" onclick="window.location.href='[[${'/organiser/analytics'}]]'"><i class="bi bi-bar-chart"></i></button>
-                                </div>
-                            </td>
+                        <tr th:if="${#lists.isEmpty(myEvents)}">
+                            <td colspan="6" class="text-center py-4" style="color:var(--text-muted);">You haven't created any events yet.</td>
                         </tr>
                     </tbody>
                 </table>

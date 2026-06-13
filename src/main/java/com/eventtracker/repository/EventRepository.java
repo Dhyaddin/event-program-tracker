@@ -19,4 +19,22 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByTitleContainingIgnoreCase(String keyword);
 
     List<Event> findAllByOrderByEventDateAsc();
+
+    List<Event> findByCategoryOrderByEventDateAsc(String category);
+
+    // ── Approval-aware queries (public listings show approved events only) ──
+    List<Event> findByApprovedTrueOrderByEventDateAsc();
+
+    List<Event> findByApprovedTrueAndCategoryOrderByEventDateAsc(String category);
+
+    List<Event> findByApprovedFalseOrderByCreatedAtDesc();
+
+    long countByApprovedFalse();
+
+    long countByApprovedTrue();
+
+    // Distinct, non-null category names for building filter chips
+    @org.springframework.data.jpa.repository.Query(
+            "SELECT DISTINCT e.category FROM Event e WHERE e.category IS NOT NULL ORDER BY e.category")
+    List<String> findDistinctCategories();
 }

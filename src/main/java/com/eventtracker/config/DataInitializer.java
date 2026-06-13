@@ -40,6 +40,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("admin@eventtracker.com")
                 .password(passwordEncoder.encode("admin123"))
                 .role(User.Role.ADMIN)
+                .status(User.Status.APPROVED)
                 .phone("0123456789")
                 .build());
 
@@ -48,6 +49,7 @@ public class DataInitializer implements CommandLineRunner {
                 .email("organizer@eventtracker.com")
                 .password(passwordEncoder.encode("org123"))
                 .role(User.Role.ORGANIZER)
+                .status(User.Status.APPROVED)        // already-approved organiser
                 .phone("0198765432")
                 .build());
 
@@ -56,7 +58,18 @@ public class DataInitializer implements CommandLineRunner {
                 .email("user@eventtracker.com")
                 .password(passwordEncoder.encode("user123"))
                 .role(User.Role.USER)
+                .status(User.Status.APPROVED)
                 .phone("0112223334")
+                .build());
+
+        // A PENDING organiser so the admin approval page has something to review on first run.
+        userRepository.save(User.builder()
+                .name("Farah Pending")
+                .email("pending@eventtracker.com")
+                .password(passwordEncoder.encode("pending123"))
+                .role(User.Role.ORGANIZER)
+                .status(User.Status.PENDING)
+                .phone("0177778888")
                 .build());
 
         // ── Create sample events ───────────────────────────────────────────
@@ -70,6 +83,7 @@ public class DataInitializer implements CommandLineRunner {
                 .category("Technology")
                 .status(Event.Status.UPCOMING)
                 .organizer(organizer)
+                .approved(true)
                 .price(0.0)
                 .build());
 
@@ -83,6 +97,7 @@ public class DataInitializer implements CommandLineRunner {
                 .category("Business")
                 .status(Event.Status.UPCOMING)
                 .organizer(organizer)
+                .approved(true)
                 .price(50.0)
                 .build());
 
@@ -96,6 +111,7 @@ public class DataInitializer implements CommandLineRunner {
                 .category("Arts & Culture")
                 .status(Event.Status.UPCOMING)
                 .organizer(organizer)
+                .approved(true)
                 .price(80.0)
                 .build());
 
@@ -109,6 +125,7 @@ public class DataInitializer implements CommandLineRunner {
                 .category("Sports & Fitness")
                 .status(Event.Status.UPCOMING)
                 .organizer(admin)
+                .approved(true)
                 .price(30.0)
                 .build());
 
@@ -122,16 +139,34 @@ public class DataInitializer implements CommandLineRunner {
                 .category("Business")
                 .status(Event.Status.UPCOMING)
                 .organizer(organizer)
+                .approved(true)
                 .price(0.0)
+                .build());
+
+        // A PENDING event (awaiting admin approval) so the Event Approvals page has data on first run.
+        eventRepository.save(Event.builder()
+                .title("Web Development Bootcamp (Pending Approval)")
+                .description("A two-day hands-on bootcamp covering HTML, CSS, JavaScript and Spring Boot basics. "
+                        + "This event is awaiting admin approval before it appears publicly.")
+                .location("FSKTM Lab 4, UPM")
+                .eventDate(LocalDate.of(2024, 9, 14))
+                .eventTime(LocalTime.of(9, 30))
+                .capacity(40)
+                .category("Technology")
+                .status(Event.Status.UPCOMING)
+                .organizer(organizer)
+                .approved(false)
+                .price(20.0)
                 .build());
 
         log.info("========================================");
         log.info("  Database seeded successfully!");
         log.info("");
         log.info("  Test Accounts:");
-        log.info("  Admin    : admin@eventtracker.com / admin123");
-        log.info("  Organizer: organizer@eventtracker.com / org123");
-        log.info("  User     : user@eventtracker.com / user123");
+        log.info("  Admin        : admin@eventtracker.com / admin123");
+        log.info("  Organizer    : organizer@eventtracker.com / org123  (approved)");
+        log.info("  Org (pending): pending@eventtracker.com / pending123 (awaiting approval)");
+        log.info("  User         : user@eventtracker.com / user123");
         log.info("========================================");
     }
 }

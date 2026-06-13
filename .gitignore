@@ -42,3 +42,6 @@ logs/
 *.log
 
 application-local.properties
+
+### Uploaded cover images (runtime data, not source) ###
+uploads/

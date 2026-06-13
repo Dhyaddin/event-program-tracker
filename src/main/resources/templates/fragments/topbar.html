@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  Fragment: topbar
+  Usage: <header th:replace="~{fragments/topbar :: topbar('Page Title')}"></header>
+  Shows the real logged-in user (currentUser, injected globally) and a working Sign Out.
+-->
+<header th:fragment="topbar(title)" class="dashboard-topbar">
+    <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+        </button>
+        <h2 style="font-size:var(--text-lg);font-weight:var(--font-semibold);margin:0;color:var(--text-primary);"
+            th:text="${title}">Dashboard</h2>
+    </div>
+    <div class="topbar-right">
+        <a th:href="@{/events}" class="btn btn-primary btn-sm d-none d-sm-inline-flex">
+            <i class="bi bi-search me-1"></i>Browse Events
+        </a>
+        <div class="dropdown ms-2">
+            <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="avatar avatar-sm" style="background:var(--primary);color:white;"
+                     th:text="${currentUser != null ? #strings.substring(currentUser.name,0,1).toUpperCase() : 'U'}">U</div>
+                <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);"
+                      th:text="${currentUser != null ? currentUser.name : 'User'}">User</span>
+                <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="min-width:180px;border-radius:var(--radius-xl);">
+                <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" th:href="@{/profile}">
+                    <i class="bi bi-person"></i>My Profile</a></li>
+                <li><hr class="dropdown-divider"/></li>
+                <li>
+                    <form th:action="@{/auth/logout}" method="post" style="margin:0;">
+                        <button type="submit"
+                                class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger border-0 bg-transparent w-100 text-start">
+                            <i class="bi bi-box-arrow-left"></i>Sign Out
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+</html>

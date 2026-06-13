@@ -58,19 +58,19 @@
             <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-people"></i></div>
-                    <div class="stat-value" data-count="1248">0</div>
+                    <div class="stat-value" th:attr="data-count=${totalUsers}" data-count="0">0</div>
                     <div class="stat-label">Total Users</div>
                     <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+8.2% this month</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-calendar3"></i></div>
-                    <div class="stat-value" data-count="84">0</div>
+                    <div class="stat-value" th:attr="data-count=${totalEvents}" data-count="0">0</div>
                     <div class="stat-label">Total Events</div>
                     <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+15 this month</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--accent-50);color:var(--accent);"><i class="bi bi-person-check"></i></div>
-                    <div class="stat-value" data-count="4320">0</div>
+                    <div class="stat-value" th:attr="data-count=${totalRegistrations}" data-count="0">0</div>
                     <div class="stat-label">Total Registrations</div>
                     <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+24% vs last month</div>
                 </div>

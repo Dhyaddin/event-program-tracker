@@ -21,10 +21,10 @@
         <div class="deco-circle deco-circle-2"></div>
         <div class="deco-circle deco-circle-3"></div>
 
-        <div class="auth-brand">
+        <a class="auth-brand text-decoration-none" th:href="@{/}" style="color:inherit;">
             <div class="auth-brand-logo">🎯</div>
             <span class="auth-brand-name">EventTracker</span>
-        </div>
+        </a>
 
         <div class="auth-panel-content">
             <h2>Start your event<br/>journey today</h2>
@@ -50,24 +50,6 @@
             </ul>
         </div>
 
-        <!-- Stats -->
-        <div style="display:flex;gap:var(--space-6);position:relative;z-index:1;">
-            <div style="text-align:center;">
-                <div style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--white);">1,200+</div>
-                <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.6);">Students</div>
-            </div>
-            <div style="width:1px;background:rgba(255,255,255,0.15);"></div>
-            <div style="text-align:center;">
-                <div style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--white);">350+</div>
-                <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.6);">Events</div>
-            </div>
-            <div style="width:1px;background:rgba(255,255,255,0.15);"></div>
-            <div style="text-align:center;">
-                <div style="font-size:var(--text-2xl);font-weight:var(--font-bold);color:var(--white);">48</div>
-                <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.6);">Organisers</div>
-            </div>
-        </div>
-
     </div>
 
     <!-- ══════════════════════════════════════════
@@ -90,6 +72,13 @@
                 <i class="bi bi-exclamation-circle-fill"></i>
                 <span th:text="${emailError}">Email already registered.</span>
             </div>
+            <div th:if="${passwordError}"
+                 style="background:#fef2f2;color:#991b1b;border:1px solid #fecaca;
+                        border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+                        margin-bottom:var(--space-4);font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span th:text="${passwordError}">Password is too weak.</span>
+            </div>
 
             <!-- Register Form -->
             <form class="auth-form" th:action="@{/auth/register}" th:object="${user}"
@@ -109,7 +98,8 @@
                     <label class="form-label">I am a...</label>
                     <div class="role-selector">
                         <label class="role-card">
-                            <input type="radio" name="role" value="USER" id="roleUser" checked/>
+                            <input type="radio" name="role" value="USER" id="roleUser"
+                                   th:checked="${user.role == null or user.role.name() == 'USER'}"/>
                             <div class="role-card-body">
                                 <div class="role-icon">🎓</div>
                                 <h6>Student / User</h6>
@@ -117,7 +107,8 @@
                             </div>
                         </label>
                         <label class="role-card">
-                            <input type="radio" name="role" value="ORGANIZER" id="roleOrganizer"/>
+                            <input type="radio" name="role" value="ORGANIZER" id="roleOrganizer"
+                                   th:checked="${user.role != null and user.role.name() == 'ORGANIZER'}"/>
                             <div class="role-card-body">
                                 <div class="role-icon">📢</div>
                                 <h6>Event Organiser</h6>
@@ -138,6 +129,7 @@
                                class="form-control"
                                placeholder="Ahmad Danial bin Abdullah"
                                autocomplete="name"
+                               th:value="${user.name}"
                                required/>
                     </div>
                 </div>
@@ -168,6 +160,7 @@
                                class="form-control"
                                placeholder="you@upm.edu.my"
                                autocomplete="email"
+                               th:value="${user.email}"
                                required/>
                     </div>
                 </div>
@@ -184,7 +177,8 @@
                                name="phone"
                                class="form-control"
                                placeholder="+60 12-345 6789"
-                               autocomplete="tel"/>
+                               autocomplete="tel"
+                               th:value="${user.phone}"/>
                     </div>
                 </div>
 
@@ -229,7 +223,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-text mb-4 mt-1">Use at least 8 characters with a mix of letters and numbers.</div>
+                <div class="form-text mb-4 mt-1">At least 6 characters, and must include both letters and numbers.</div>
 
                 <!-- Terms Agreement -->
                 <div class="mb-5">
@@ -270,6 +264,18 @@
         const confirm = document.getElementById('confirmPassword').value;
         const terms   = document.getElementById('agreeTerms').checked;
 
+        // Pop up a message and KEEP the form values (preventDefault stops submission,
+        // so nothing the user typed is cleared).
+        if (pass.length < 6) {
+            e.preventDefault();
+            alert('Your password must be at least 6 characters long.');
+            return;
+        }
+        if (!/[A-Za-z]/.test(pass) || !/\d/.test(pass)) {
+            e.preventDefault();
+            alert('Your password must include both letters and numbers.');
+            return;
+        }
         if (pass !== confirm) {
             e.preventDefault();
             alert('Passwords do not match. Please re-enter.');

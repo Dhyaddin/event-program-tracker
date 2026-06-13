@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/admin/event-approvals.html
+  Route: GET /admin/event-approvals
+  Controller: AdminPagesController.eventApprovals()
+  Access: ADMIN role
+-->
+
+<head th:replace="~{fragments/head :: head(title='Event Approvals')}"></head>
+
+<body>
+<div class="dashboard-layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='event-approvals', userRole='ADMIN')}"></div>
+
+    <div class="dashboard-main">
+
+        <header th:replace="~{fragments/topbar :: topbar('Event Approvals')}"></header>
+
+        <main class="dashboard-content">
+
+            <div class="dashboard-welcome">
+                <h1>Pending Event Approvals 📋</h1>
+                <p>Review events submitted by organisers. Approved events become visible to everyone.</p>
+            </div>
+
+            <!-- Flash messages -->
+            <div th:if="${successMessage}" class="alert" role="alert"
+                 style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-5);">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}">Done</span>
+            </div>
+
+            <div class="stats-grid" style="grid-template-columns:repeat(1,minmax(0,260px));margin-bottom:var(--space-6);">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-hourglass-split"></i></div>
+                    <div class="stat-value" th:text="${pendingEventCount}">0</div>
+                    <div class="stat-label">Awaiting Approval</div>
+                </div>
+            </div>
+
+            <div class="dashboard-table">
+                <div class="table-header"><h5>Pending Events</h5></div>
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Organiser</th>
+                            <th>Date</th>
+                            <th>Submitted</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="ev : ${pendingEvents}">
+                            <td>
+                                <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);" th:text="${ev.title}">Event</div>
+                                <span class="badge badge-conference" style="font-size:0.65rem;" th:text="${ev.category != null ? ev.category : 'General'}">Cat</span>
+                            </td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);"
+                                th:text="${ev.organizer != null ? ev.organizer.name : 'Unknown'}">Organiser</td>
+                            <td style="font-size:var(--text-sm);"
+                                th:text="${ev.eventDate != null ? #temporals.format(ev.eventDate,'d MMM yyyy') : 'TBA'}">Date</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);"
+                                th:text="${ev.createdAt != null ? #temporals.format(ev.createdAt,'d MMM yyyy') : ''}">Submitted</td>
+                            <td>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <a th:href="@{/events/{id}(id=${ev.id})}" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">View</a>
+                                    <form th:action="@{/admin/event-approvals/{id}/approve(id=${ev.id})}" method="post" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-check-lg me-1"></i>Approve</button>
+                                    </form>
+                                    <form th:action="@{/admin/event-approvals/{id}/reject(id=${ev.id})}" method="post" class="m-0"
+                                          onsubmit="return confirm('Reject and permanently delete this event?');">
+                                        <button type="submit" class="btn btn-sm"
+                                                style="border:1px solid var(--danger);color:var(--danger);background:transparent;">
+                                            <i class="bi bi-x-lg me-1"></i>Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(pendingEvents)}">
+                            <td colspan="5" class="text-center py-4" style="color:var(--text-muted);">
+                                <i class="bi bi-check2-circle me-1"></i>No events are waiting for approval.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

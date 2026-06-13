@@ -18,35 +18,7 @@
 
     <div class="dashboard-main">
 
-        <!-- Topbar -->
-        <header class="dashboard-topbar">
-            <div class="topbar-left">
-                <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0" style="font-size:var(--text-sm);">
-                        <li class="breadcrumb-item"><a th:href="@{/dashboard/user}" style="color:var(--primary);text-decoration:none;">Dashboard</a></li>
-                        <li class="breadcrumb-item active" style="color:var(--text-muted);">My Registrations</li>
-                    </ol>
-                </nav>
-            </div>
-            <div class="topbar-right">
-                <a th:href="@{/events}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-search me-1"></i>Browse Events
-                </a>
-                <div class="dropdown ms-2">
-                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
-                        <div class="avatar avatar-sm" style="background:var(--primary);color:white;">A</div>
-                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">Ahmad</span>
-                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="border-radius:var(--radius-xl);">
-                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Profile</a></li>
-                        <li><hr class="dropdown-divider"/></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-left me-2"></i>Sign Out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>
+        <header th:replace="~{fragments/topbar :: topbar('My Registrations')}"></header>
 
         <main class="dashboard-content">
 
@@ -61,17 +33,17 @@
             <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-ticket-detailed"></i></div>
-                    <div class="stat-value" data-count="8">0</div>
+                    <div class="stat-value" th:attr="data-count=${totalRegistered}" data-count="0">0</div>
                     <div class="stat-label">Total Registered</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-calendar-check"></i></div>
-                    <div class="stat-value" data-count="3">0</div>
+                    <div class="stat-value" th:attr="data-count=${upcomingCount}" data-count="0">0</div>
                     <div class="stat-label">Upcoming</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--accent-50);color:var(--accent);"><i class="bi bi-clock-history"></i></div>
-                    <div class="stat-value" data-count="5">0</div>
+                    <div class="stat-value" th:attr="data-count=${attendedCount}" data-count="0">0</div>
                     <div class="stat-label">Attended</div>
                 </div>
                 <div class="stat-card">
@@ -106,113 +78,59 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr data-status="upcoming">
+                        <tr th:each="reg : ${registrations}"
+                            th:attr="data-status=${reg.status.name() == 'ATTENDED' ? 'attended' : (reg.status.name() == 'CANCELLED' ? 'cancelled' : 'upcoming')}">
                             <td>
                                 <div class="d-flex align-items-center gap-3">
-                                    <div style="width:42px;height:42px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🚀</div>
+                                    <div style="width:42px;height:42px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;color:white;">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </div>
                                     <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Tech Innovation Summit 2025</div>
-                                        <span class="badge badge-conference" style="font-size:0.6rem;">Conference</span>
+                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);" th:text="${reg.event.title}">Event</div>
+                                        <span class="badge badge-conference" style="font-size:0.6rem;" th:text="${reg.event.category != null ? reg.event.category : 'General'}">Cat</span>
                                     </div>
                                 </div>
                             </td>
-                            <td style="font-size:var(--text-sm);">15 Jul 2025<br><span style="color:var(--text-muted);font-size:var(--text-xs);">9:00 AM</span></td>
-                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">DRB-HICOM Auditorium</td>
-                            <td><span class="badge badge-success">Confirmed</span></td>
-                            <td style="font-size:var(--text-xs);color:var(--text-muted);">3 Jun 2025</td>
+                            <td style="font-size:var(--text-sm);">
+                                <span th:text="${reg.event.eventDate != null ? #temporals.format(reg.event.eventDate,'d MMM yyyy') : 'TBA'}">Date</span>
+                                <br><span style="color:var(--text-muted);font-size:var(--text-xs);"
+                                          th:text="${reg.event.eventTime != null ? #temporals.format(reg.event.eventTime,'h:mm a') : ''}">Time</span>
+                            </td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);" th:text="${reg.event.location != null ? reg.event.location : 'TBA'}">Location</td>
+                            <td>
+                                <span class="badge badge-success" th:if="${reg.status.name() == 'REGISTERED'}">Confirmed</span>
+                                <span class="badge" style="background:rgba(16,185,129,0.12);color:var(--success);border:1px solid rgba(16,185,129,0.25);" th:if="${reg.status.name() == 'ATTENDED'}">Attended</span>
+                                <span class="badge" style="background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);" th:if="${reg.status.name() == 'CANCELLED'}">Cancelled</span>
+                                <!-- Event-level notices -->
+                                <div th:if="${reg.event.status.name() == 'CANCELLED'}" style="margin-top:4px;">
+                                    <span class="badge" style="background:rgba(239,68,68,0.1);color:var(--danger);font-size:0.6rem;">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Event cancelled
+                                    </span>
+                                </div>
+                                <div th:if="${reg.event.status.name() == 'COMPLETED'}" style="margin-top:4px;">
+                                    <span class="badge" style="background:rgba(107,114,128,0.12);color:var(--text-muted);font-size:0.6rem;">Event completed</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);"
+                                th:text="${reg.registrationDate != null ? #temporals.format(reg.registrationDate,'d MMM yyyy') : ''}">Registered</td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <a th:href="@{/events/1}" class="btn btn-icon btn-sm btn-ghost" title="View Event" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Download QR" data-bs-toggle="tooltip" onclick="showComingSoon(event,'QR code download coming soon.')"><i class="bi bi-qr-code"></i></button>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Cancel Registration" style="color:var(--danger);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Cancel feature coming soon.')"><i class="bi bi-x-circle"></i></button>
+                                    <a th:href="@{/events/{id}(id=${reg.event.id})}" class="btn btn-icon btn-sm btn-ghost" title="View Event"><i class="bi bi-eye"></i></a>
+                                    <!-- Review only after the event is completed (attended) -->
+                                    <a th:if="${reg.event.status.name() == 'COMPLETED'}"
+                                       th:href="@{/events/{id}(id=${reg.event.id})}"
+                                       class="btn btn-icon btn-sm btn-ghost" style="color:var(--warning);" title="Write a review"><i class="bi bi-star"></i></a>
+                                    <!-- Cancel only while still registered and event not finished -->
+                                    <form th:if="${reg.status.name() == 'REGISTERED' and reg.event.status.name() != 'COMPLETED'}"
+                                          th:action="@{/events/{id}/cancel-registration(id=${reg.event.id})}" method="post"
+                                          onsubmit="return confirm('Cancel your registration for this event?');" class="m-0">
+                                        <button type="submit" class="btn btn-icon btn-sm btn-ghost" style="color:var(--danger);" title="Cancel Registration"><i class="bi bi-x-circle"></i></button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
-                        <tr data-status="upcoming">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div style="width:42px;height:42px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--success),#059669);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🧪</div>
-                                    <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">UPM Research Seminar</div>
-                                        <span class="badge badge-seminar" style="font-size:0.6rem;">Seminar</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-size:var(--text-sm);">22 Jul 2025<br><span style="color:var(--text-muted);font-size:var(--text-xs);">2:00 PM</span></td>
-                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">FKAB Lecture Hall</td>
-                            <td><span class="badge badge-success">Confirmed</span></td>
-                            <td style="font-size:var(--text-xs);color:var(--text-muted);">5 Jun 2025</td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a th:href="@{/events/2}" class="btn btn-icon btn-sm btn-ghost" title="View Event" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Download QR" data-bs-toggle="tooltip" onclick="showComingSoon(event,'QR code download coming soon.')"><i class="bi bi-qr-code"></i></button>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Cancel Registration" style="color:var(--danger);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Cancel feature coming soon.')"><i class="bi bi-x-circle"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-status="upcoming">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div style="width:42px;height:42px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--warning),#d97706);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🏃</div>
-                                    <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">UPM Sports Carnival 2025</div>
-                                        <span class="badge badge-social" style="font-size:0.6rem;">Sports</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-size:var(--text-sm);">5 Aug 2025<br><span style="color:var(--text-muted);font-size:var(--text-xs);">7:00 AM</span></td>
-                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">UPM Stadium</td>
-                            <td><span class="badge" style="background:rgba(245,158,11,0.15);color:var(--warning);border:1px solid rgba(245,158,11,0.3);">Pending</span></td>
-                            <td style="font-size:var(--text-xs);color:var(--text-muted);">7 Jun 2025</td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a th:href="@{/events/3}" class="btn btn-icon btn-sm btn-ghost" title="View Event" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Download QR" data-bs-toggle="tooltip" onclick="showComingSoon(event,'QR code download coming soon.')"><i class="bi bi-qr-code"></i></button>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Cancel Registration" style="color:var(--danger);" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Cancel feature coming soon.')"><i class="bi bi-x-circle"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-status="attended">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div style="width:42px;height:42px;border-radius:var(--radius-lg);background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">🤖</div>
-                                    <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">AI Workshop 2024</div>
-                                        <span class="badge badge-workshop" style="font-size:0.6rem;">Workshop</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-size:var(--text-sm);">10 Dec 2024<br><span style="color:var(--text-muted);font-size:var(--text-xs);">9:00 AM</span></td>
-                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">FSKTM Lab 3</td>
-                            <td><span class="badge" style="background:rgba(16,185,129,0.12);color:var(--success);border:1px solid rgba(16,185,129,0.25);">Attended</span></td>
-                            <td style="font-size:var(--text-xs);color:var(--text-muted);">1 Dec 2024</td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a th:href="@{/events/4}" class="btn btn-icon btn-sm btn-ghost" title="View Event" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Download Certificate" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Certificate download coming soon.')"><i class="bi bi-award"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr data-status="attended">
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div style="width:42px;height:42px;border-radius:var(--radius-lg);background:linear-gradient(135deg,#0ea5e9,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">💼</div>
-                                    <div>
-                                        <div style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Career Fair UPM 2024</div>
-                                        <span class="badge badge-conference" style="font-size:0.6rem;">Conference</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td style="font-size:var(--text-sm);">5 Nov 2024<br><span style="color:var(--text-muted);font-size:var(--text-xs);">10:00 AM</span></td>
-                            <td style="font-size:var(--text-sm);color:var(--text-secondary);">UPM Putra International Centre</td>
-                            <td><span class="badge" style="background:rgba(16,185,129,0.12);color:var(--success);border:1px solid rgba(16,185,129,0.25);">Attended</span></td>
-                            <td style="font-size:var(--text-xs);color:var(--text-muted);">28 Oct 2024</td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <a th:href="@{/events/5}" class="btn btn-icon btn-sm btn-ghost" title="View Event" data-bs-toggle="tooltip"><i class="bi bi-eye"></i></a>
-                                    <button class="btn btn-icon btn-sm btn-ghost" title="Download Certificate" data-bs-toggle="tooltip" onclick="showComingSoon(event,'Certificate download coming soon.')"><i class="bi bi-award"></i></button>
-                                </div>
-                            </td>
+                        <tr th:if="${#lists.isEmpty(registrations)}">
+                            <td colspan="6" class="text-center py-4" style="color:var(--text-muted);">You haven't registered for any events yet.</td>
                         </tr>
                     </tbody>
                 </table>

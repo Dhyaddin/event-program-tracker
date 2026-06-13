@@ -38,6 +38,15 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    // Account approval state.
+    // USERs are auto-APPROVED on registration. New ORGANIZERs start as PENDING
+    // until an admin approves (or rejects) them.
+    // Column is nullable so that adding it to an existing database (ddl-auto=update)
+    // does not fail on rows created before this field existed.
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Status status;
+
     private String phone;
 
     @Column(name = "profile_picture")
@@ -52,9 +61,23 @@ public class User {
         if (this.role == null) {
             this.role = Role.USER;
         }
+        // Default approval state if none was set:
+        // organizers need approval, everyone else is approved immediately.
+        if (this.status == null) {
+            this.status = (this.role == Role.ORGANIZER) ? Status.PENDING : Status.APPROVED;
+        }
+    }
+
+    // Convenience helper for templates / controllers.
+    public boolean isApproved() {
+        return this.status == Status.APPROVED;
     }
 
     public enum Role {
         USER, ORGANIZER, ADMIN
+    }
+
+    public enum Status {
+        PENDING, APPROVED, REJECTED
     }
 }

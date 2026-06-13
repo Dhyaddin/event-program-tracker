@@ -12,7 +12,14 @@ public interface RegistrationService {
     Optional<Registration> findByUserAndEvent(User user, Event event);
     List<Registration> findByUser(User user);
     List<Registration> findByEvent(Event event);
+    List<Registration> findByOrganizer(User organizer);
     void cancelRegistration(Long registrationId);
     boolean isUserRegistered(User user, Event event);
     long countRegistrations(Event event);
+    long countAllRegistrations();
+    void deleteRegistrationsForEvent(Event event);
+    void deleteRegistrationsForUser(User user);
+
+    /** Mark every active (REGISTERED) registration for this event as ATTENDED. */
+    void markAttendedForEvent(Event event);
 }

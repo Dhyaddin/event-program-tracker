@@ -83,7 +83,6 @@
                th:classappend="${activeMenu == 'registrations'} ? ' active' : ''">
                 <i class="bi bi-ticket-detailed link-icon"></i>
                 <span class="link-label">My Registrations</span>
-                <span class="link-badge">3</span>
             </a>
         </li>
         <li th:if="${userRole == 'USER' or userRole == null}">
@@ -99,12 +98,21 @@
         <li th:if="${userRole == 'ORGANISER'}">
             <span class="sidebar-section-label">Management</span>
         </li>
-        <li th:if="${userRole == 'ORGANISER'}">
+        <li th:if="${userRole == 'ORGANISER' and !isPendingOrganiser}">
             <a class="sidebar-link"
                th:href="@{/events/create}"
                th:classappend="${activeMenu == 'create-event'} ? ' active' : ''">
                 <i class="bi bi-plus-circle link-icon"></i>
                 <span class="link-label">Create Event</span>
+            </a>
+        </li>
+        <!-- Pending organisers see a disabled hint instead of the Create action -->
+        <li th:if="${userRole == 'ORGANISER' and isPendingOrganiser}">
+            <a class="sidebar-link" href="#" onclick="return false;"
+               style="opacity:0.55;cursor:not-allowed;" title="Awaiting admin approval">
+                <i class="bi bi-lock link-icon"></i>
+                <span class="link-label">Create Event</span>
+                <span class="link-badge" style="background:var(--warning);">Pending</span>
             </a>
         </li>
         <li th:if="${userRole == 'ORGANISER'}">
@@ -121,21 +129,28 @@
                th:classappend="${activeMenu == 'registrations'} ? ' active' : ''">
                 <i class="bi bi-people link-icon"></i>
                 <span class="link-label">Registrations</span>
-                <span class="link-badge">12</span>
-            </a>
-        </li>
-        <li th:if="${userRole == 'ORGANISER'}">
-            <a class="sidebar-link"
-               th:href="@{/organiser/analytics}"
-               th:classappend="${activeMenu == 'reports'} ? ' active' : ''">
-                <i class="bi bi-bar-chart link-icon"></i>
-                <span class="link-label">Analytics</span>
             </a>
         </li>
 
         <!-- ── ADMIN SECTION ── -->
         <li th:if="${userRole == 'ADMIN'}">
             <span class="sidebar-section-label">Administration</span>
+        </li>
+        <li th:if="${userRole == 'ADMIN'}">
+            <a class="sidebar-link"
+               th:href="@{/admin/approvals}"
+               th:classappend="${activeMenu == 'approvals'} ? ' active' : ''">
+                <i class="bi bi-person-check link-icon"></i>
+                <span class="link-label">Organiser Approvals</span>
+            </a>
+        </li>
+        <li th:if="${userRole == 'ADMIN'}">
+            <a class="sidebar-link"
+               th:href="@{/admin/event-approvals}"
+               th:classappend="${activeMenu == 'event-approvals'} ? ' active' : ''">
+                <i class="bi bi-calendar-check link-icon"></i>
+                <span class="link-label">Event Approvals</span>
+            </a>
         </li>
         <li th:if="${userRole == 'ADMIN'}">
             <a class="sidebar-link"
@@ -149,24 +164,8 @@
             <a class="sidebar-link"
                th:href="@{/admin/events}"
                th:classappend="${activeMenu == 'all-events'} ? ' active' : ''">
-                <i class="bi bi-calendar-check link-icon"></i>
+                <i class="bi bi-calendar3 link-icon"></i>
                 <span class="link-label">All Events</span>
-            </a>
-        </li>
-        <li th:if="${userRole == 'ADMIN'}">
-            <a class="sidebar-link"
-               th:href="@{/admin/reports}"
-               th:classappend="${activeMenu == 'reports'} ? ' active' : ''">
-                <i class="bi bi-graph-up link-icon"></i>
-                <span class="link-label">Reports</span>
-            </a>
-        </li>
-        <li th:if="${userRole == 'ADMIN'}">
-            <a class="sidebar-link"
-               th:href="@{/admin/settings}"
-               th:classappend="${activeMenu == 'settings'} ? ' active' : ''">
-                <i class="bi bi-gear link-icon"></i>
-                <span class="link-label">System Settings</span>
             </a>
         </li>
 
@@ -178,13 +177,6 @@
                th:classappend="${activeMenu == 'profile'} ? ' active' : ''">
                 <i class="bi bi-person link-icon"></i>
                 <span class="link-label">My Profile</span>
-            </a>
-        </li>
-        <li>
-            <a class="sidebar-link" href="#">
-                <i class="bi bi-bell link-icon"></i>
-                <span class="link-label">Notifications</span>
-                <span class="link-badge">5</span>
             </a>
         </li>
 

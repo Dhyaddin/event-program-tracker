@@ -43,93 +43,85 @@
         <div class="col-lg-3 d-none d-lg-block">
             <div style="position:sticky;top:calc(var(--navbar-height) + var(--space-4));">
 
-                <!-- Search -->
+                <!-- Search (server-side, by title) -->
                 <div class="card mb-4">
                     <div class="card-header"><h6 class="card-title">Search</h6></div>
                     <div class="card-body">
-                        <div class="input-group">
-                            <i class="bi bi-search input-icon"></i>
-                            <input type="text" class="form-control" placeholder="Search events..."/>
+                        <form th:action="@{/events}" method="get">
+                            <div class="input-group">
+                                <i class="bi bi-search input-icon"></i>
+                                <input type="text" name="search" class="form-control" placeholder="Search events..."
+                                       th:value="${search}"/>
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary btn-sm btn-block mt-2">Search</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Category Filter (live, server-side) -->
+                <div class="card mb-4">
+                    <div class="card-header"><h6 class="card-title">Category</h6></div>
+                    <div class="card-body d-flex flex-column gap-1">
+                        <a th:href="@{/events}"
+                           class="d-flex align-items-center justify-content-between text-decoration-none px-2 py-1"
+                           th:style="${category == null} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">
+                            <span><i class="bi bi-grid me-2"></i>All Categories</span>
+                        </a>
+                        <a th:each="cat : ${categories}"
+                           th:href="@{/events(category=${cat})}"
+                           class="d-flex align-items-center justify-content-between text-decoration-none px-2 py-1"
+                           th:style="${category != null and category == cat} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">
+                            <span><i class="bi bi-tag me-2"></i><span th:text="${cat}">Category</span></span>
+                        </a>
+                        <div th:if="${#lists.isEmpty(categories)}" style="font-size:var(--text-xs);color:var(--text-muted);">
+                            No categories yet.
                         </div>
                     </div>
                 </div>
 
-                <!-- Category Filter -->
-                <div class="card mb-4">
-                    <div class="card-header"><h6 class="card-title">Category</h6></div>
-                    <div class="card-body d-flex flex-column gap-2">
-                        <label class="d-flex align-items-center justify-content-between" style="cursor:pointer;font-size:var(--text-sm);">
-                            <span class="d-flex align-items-center gap-2"><input type="checkbox" checked class="me-1"/> All Categories</span>
-                            <span class="badge badge-gray">350</span>
-                        </label>
-                        <label class="d-flex align-items-center justify-content-between" style="cursor:pointer;font-size:var(--text-sm);">
-                            <span class="d-flex align-items-center gap-2"><input type="checkbox" class="me-1"/> Conference</span>
-                            <span class="badge badge-conference">42</span>
-                        </label>
-                        <label class="d-flex align-items-center justify-content-between" style="cursor:pointer;font-size:var(--text-sm);">
-                            <span class="d-flex align-items-center gap-2"><input type="checkbox" class="me-1"/> Workshop</span>
-                            <span class="badge badge-workshop">87</span>
-                        </label>
-                        <label class="d-flex align-items-center justify-content-between" style="cursor:pointer;font-size:var(--text-sm);">
-                            <span class="d-flex align-items-center gap-2"><input type="checkbox" class="me-1"/> Seminar</span>
-                            <span class="badge badge-seminar">65</span>
-                        </label>
-                        <label class="d-flex align-items-center justify-content-between" style="cursor:pointer;font-size:var(--text-sm);">
-                            <span class="d-flex align-items-center gap-2"><input type="checkbox" class="me-1"/> Social</span>
-                            <span class="badge badge-social">58</span>
-                        </label>
-                        <label class="d-flex align-items-center justify-content-between" style="cursor:pointer;font-size:var(--text-sm);">
-                            <span class="d-flex align-items-center gap-2"><input type="checkbox" class="me-1"/> Sports</span>
-                            <span class="badge badge-sports">34</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Date Filter -->
+                <!-- Date Filter (live, server-side) -->
                 <div class="card mb-4">
                     <div class="card-header"><h6 class="card-title">Date</h6></div>
-                    <div class="card-body d-flex flex-column gap-2">
-                        <label style="cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
-                            <input type="radio" name="dateFilter" checked/> Any time
-                        </label>
-                        <label style="cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
-                            <input type="radio" name="dateFilter"/> This week
-                        </label>
-                        <label style="cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
-                            <input type="radio" name="dateFilter"/> This month
-                        </label>
-                        <label style="cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
-                            <input type="radio" name="dateFilter"/> Next month
-                        </label>
-                        <hr class="my-1"/>
-                        <label class="form-label mb-1" style="font-size:var(--text-xs);color:var(--text-muted);">Custom range</label>
-                        <input type="date" class="form-control form-control-sm" placeholder="From"/>
-                        <input type="date" class="form-control form-control-sm mt-1" placeholder="To"/>
+                    <div class="card-body d-flex flex-column gap-1">
+                        <a th:href="@{/events(category=${category},search=${search},price=${price})}"
+                           class="text-decoration-none px-2 py-1"
+                           th:style="${date == null} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">Any time</a>
+                        <a th:href="@{/events(category=${category},search=${search},price=${price},date='upcoming')}"
+                           class="text-decoration-none px-2 py-1"
+                           th:style="${date == 'upcoming'} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">Upcoming</a>
+                        <a th:href="@{/events(category=${category},search=${search},price=${price},date='month')}"
+                           class="text-decoration-none px-2 py-1"
+                           th:style="${date == 'month'} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">This month</a>
                     </div>
                 </div>
 
-                <!-- Price Filter -->
+                <!-- Price Filter (live, server-side) -->
                 <div class="card mb-4">
                     <div class="card-header"><h6 class="card-title">Price</h6></div>
-                    <div class="card-body d-flex flex-column gap-2">
-                        <label style="cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
-                            <input type="radio" name="priceFilter" checked/> Any price
-                        </label>
-                        <label style="cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
-                            <input type="radio" name="priceFilter"/> Free only
-                        </label>
-                        <label style="cursor:pointer;font-size:var(--text-sm);display:flex;align-items:center;gap:var(--space-2);">
-                            <input type="radio" name="priceFilter"/> Paid only
-                        </label>
+                    <div class="card-body d-flex flex-column gap-1">
+                        <a th:href="@{/events(category=${category},search=${search},date=${date})}"
+                           class="text-decoration-none px-2 py-1"
+                           th:style="${price == null} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">Any price</a>
+                        <a th:href="@{/events(category=${category},search=${search},date=${date},price='free')}"
+                           class="text-decoration-none px-2 py-1"
+                           th:style="${price == 'free'} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">Free only</a>
+                        <a th:href="@{/events(category=${category},search=${search},date=${date},price='paid')}"
+                           class="text-decoration-none px-2 py-1"
+                           th:style="${price == 'paid'} ? 'background:var(--primary-50);border-radius:var(--radius-md);' : ''"
+                           style="font-size:var(--text-sm);color:var(--text-primary);">Paid only</a>
                     </div>
                 </div>
 
-                <button class="btn btn-outline-primary btn-sm btn-block">
-                    <i class="bi bi-funnel me-1"></i>Apply Filters
-                </button>
-                <button class="btn btn-ghost btn-sm btn-block mt-2" style="color:var(--text-muted);">
-                    Clear All
-                </button>
+                <a th:href="@{/events}" class="btn btn-ghost btn-sm btn-block" style="color:var(--text-muted);border:1px solid var(--border-color);">
+                    <i class="bi bi-x-circle me-1"></i>Clear All Filters
+                </a>
 
             </div>
         </div>
@@ -143,216 +135,82 @@
             <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5">
                 <div>
                     <span style="font-size:var(--text-sm);color:var(--text-secondary);">
-                        <!-- SECTION FOR BACKEND/DATABASE -->
-                        Showing <strong>9</strong> of <strong>350</strong> events
+                        Showing <strong th:text="${#lists.size(events)}">0</strong> event(s)
+                        <span th:if="${category != null}"> in <strong th:text="${category}">Category</strong>
+                            <a th:href="@{/events}" style="font-size:var(--text-xs);">(clear)</a>
+                        </span>
+                        <span th:if="${search != null and !search.isEmpty()}"> for "<strong th:text="${search}">q</strong>"
+                            <a th:href="@{/events}" style="font-size:var(--text-xs);">(clear)</a>
+                        </span>
                     </span>
                 </div>
-                <div class="d-flex align-items-center gap-3">
-                    <!-- Sort -->
-                    <select class="form-select form-select-sm" style="width:auto;">
-                        <option>Newest First</option>
-                        <option>Oldest First</option>
-                        <option>Date: Upcoming</option>
-                        <option>Popularity</option>
-                    </select>
-                    <!-- View Toggle -->
-                    <div class="view-toggle">
-                        <button class="view-btn active" id="viewGrid" onclick="setView('grid')" title="Grid view">
-                            <i class="bi bi-grid"></i>
-                        </button>
-                        <button class="view-btn" id="viewList" onclick="setView('list')" title="List view">
-                            <i class="bi bi-list-ul"></i>
-                        </button>
-                    </div>
-                </div>
             </div>
 
-            <!-- Category Quick Filter Chips -->
-            <div class="filter-chips mb-5">
-                <a href="#" class="filter-chip active">All</a>
-                <a href="#" class="filter-chip">🏛️ Conference</a>
-                <a href="#" class="filter-chip">🛠️ Workshop</a>
-                <a href="#" class="filter-chip">📚 Seminar</a>
-                <a href="#" class="filter-chip">🎉 Social</a>
-                <a href="#" class="filter-chip">⚽ Sports</a>
-                <a href="#" class="filter-chip">🆓 Free Only</a>
-            </div>
+            <!-- ================================================ -->
+            <!-- LIVE DATA — events loaded from the database      -->
+            <!-- ================================================ -->
 
-            <!-- SECTION FOR BACKEND/DATABASE -->
-            <!-- Dynamic event list will be rendered here via th:each -->
-            <!-- Example: th:each="event : ${events}" -->
+            <!-- Empty state when there are no events -->
+            <div th:if="${#lists.isEmpty(events)}" class="text-center py-5">
+                <i class="bi bi-calendar-x" style="font-size:3rem;color:var(--text-muted);"></i>
+                <h5 class="mt-3" style="color:var(--text-secondary);">No events found</h5>
+                <p style="color:var(--text-muted);">Try a different search, or check back later.</p>
+            </div>
 
             <!-- Events Grid -->
-            <div class="events-grid" id="eventsGrid">
+            <div class="events-grid" id="eventsGrid" th:unless="${#lists.isEmpty(events)}">
 
-                <!-- Card 1 -->
-                <div class="event-card">
+                <div class="event-card" th:each="event : ${events}">
                     <div class="event-card-img">
-                        <div class="event-card-img-placeholder">
-                            <i class="bi bi-cpu" style="font-size:3rem;color:var(--primary);"></i>
+                        <img th:if="${event.imageUrl != null and !event.imageUrl.isEmpty()}" th:src="${event.imageUrl}" alt=""
+                             style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
+                        <div th:unless="${event.imageUrl != null and !event.imageUrl.isEmpty()}" class="event-card-img-placeholder">
+                            <i class="bi bi-calendar-event" style="font-size:3rem;color:var(--primary);"></i>
                         </div>
-                        <div class="event-card-category"><span class="badge badge-conference">Conference</span></div>
-                        <div class="event-card-featured">Featured</div>
-                        <div class="event-date-chip"><div class="chip-day">15</div><div class="chip-month">Jul</div></div>
-                        <button class="event-save-btn" onclick="toggleSave(this)"><i class="bi bi-bookmark"></i></button>
+                        <div class="event-card-category">
+                            <span class="badge badge-conference" th:text="${event.category != null ? event.category : 'General'}">Category</span>
+                        </div>
+                        <div class="event-date-chip" th:if="${event.eventDate != null}">
+                            <div class="chip-day" th:text="${#temporals.format(event.eventDate,'dd')}">15</div>
+                            <div class="chip-month" th:text="${#temporals.format(event.eventDate,'MMM')}">Jul</div>
+                        </div>
                     </div>
                     <div class="event-card-body">
-                        <a th:href="@{/events/1}" style="text-decoration:none;">
-                            <h5 class="event-card-title">AI &amp; Machine Learning Summit 2025</h5>
+                        <a th:href="@{/events/{id}(id=${event.id})}" style="text-decoration:none;">
+                            <h5 class="event-card-title" th:text="${event.title}">Event Title</h5>
                         </a>
                         <div class="event-card-meta">
-                            <div class="event-meta-item"><i class="bi bi-calendar3"></i><span>15 Jul 2025 · 8:00 AM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-geo-alt"></i><span>DK5, Faculty of CS, UPM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-people"></i><span>280 / 300 registered</span></div>
+                            <div class="event-meta-item">
+                                <i class="bi bi-calendar3"></i>
+                                <span th:text="${(event.eventDate != null ? #temporals.format(event.eventDate,'d MMM yyyy') : 'TBA')
+                                       + (event.eventTime != null ? ' · ' + #temporals.format(event.eventTime,'h:mm a') : '')}">Date</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <i class="bi bi-geo-alt"></i>
+                                <span th:text="${event.location != null ? event.location : 'Venue TBA'}">Location</span>
+                            </div>
+                            <div class="event-meta-item">
+                                <i class="bi bi-people"></i>
+                                <span th:text="${event.capacity} + ' capacity'">Capacity</span>
+                            </div>
                         </div>
                         <div class="event-card-footer">
-                            <div><div class="event-price free">FREE</div></div>
-                            <a th:href="@{/events/1}" class="btn btn-primary btn-sm">Register</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="event-card">
-                    <div class="event-card-img">
-                        <div class="event-card-img-placeholder" style="background:linear-gradient(135deg,#FEF3C7,#FDE68A);">
-                            <i class="bi bi-brush" style="font-size:3rem;color:var(--warning);"></i>
-                        </div>
-                        <div class="event-card-category"><span class="badge badge-workshop">Workshop</span></div>
-                        <div class="event-date-chip"><div class="chip-day">22</div><div class="chip-month">Jul</div></div>
-                        <button class="event-save-btn" onclick="toggleSave(this)"><i class="bi bi-bookmark"></i></button>
-                    </div>
-                    <div class="event-card-body">
-                        <a th:href="@{/events/2}" style="text-decoration:none;">
-                            <h5 class="event-card-title">Creative Design &amp; Branding Workshop</h5>
-                        </a>
-                        <div class="event-card-meta">
-                            <div class="event-meta-item"><i class="bi bi-calendar3"></i><span>22 Jul 2025 · 9:00 AM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-geo-alt"></i><span>Putra Business School</span></div>
-                            <div class="event-meta-item"><i class="bi bi-people"></i><span>45 / 60 registered</span></div>
-                        </div>
-                        <div class="event-card-footer">
-                            <div><div class="event-price">RM 25</div></div>
-                            <a th:href="@{/events/2}" class="btn btn-primary btn-sm">Register</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="event-card">
-                    <div class="event-card-img">
-                        <div class="event-card-img-placeholder" style="background:linear-gradient(135deg,#DBEAFE,#BFDBFE);">
-                            <i class="bi bi-graph-up-arrow" style="font-size:3rem;color:var(--info);"></i>
-                        </div>
-                        <div class="event-card-category"><span class="badge badge-seminar">Seminar</span></div>
-                        <div class="event-date-chip"><div class="chip-day">01</div><div class="chip-month">Aug</div></div>
-                        <button class="event-save-btn" onclick="toggleSave(this)"><i class="bi bi-bookmark"></i></button>
-                    </div>
-                    <div class="event-card-body">
-                        <a th:href="@{/events/3}" style="text-decoration:none;">
-                            <h5 class="event-card-title">Entrepreneurship &amp; Startup Seminar Season 3</h5>
-                        </a>
-                        <div class="event-card-meta">
-                            <div class="event-meta-item"><i class="bi bi-calendar3"></i><span>1 Aug 2025 · 2:00 PM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-geo-alt"></i><span>Auditorium FBMK, UPM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-people"></i><span>120 / 200 registered</span></div>
-                        </div>
-                        <div class="event-card-footer">
-                            <div><div class="event-price free">FREE</div></div>
-                            <a th:href="@{/events/3}" class="btn btn-primary btn-sm">Register</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="event-card">
-                    <div class="event-card-img">
-                        <div class="event-card-img-placeholder" style="background:linear-gradient(135deg,#D1FAE5,#A7F3D0);">
-                            <i class="bi bi-controller" style="font-size:3rem;color:var(--success);"></i>
-                        </div>
-                        <div class="event-card-category"><span class="badge badge-sports">E-Sports</span></div>
-                        <div class="event-date-chip"><div class="chip-day">08</div><div class="chip-month">Aug</div></div>
-                        <button class="event-save-btn" onclick="toggleSave(this)"><i class="bi bi-bookmark"></i></button>
-                    </div>
-                    <div class="event-card-body">
-                        <a th:href="@{/events/4}" style="text-decoration:none;">
-                            <h5 class="event-card-title">UPM E-Sports Championship 2025</h5>
-                        </a>
-                        <div class="event-card-meta">
-                            <div class="event-meta-item"><i class="bi bi-calendar3"></i><span>8 Aug 2025 · 10:00 AM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-geo-alt"></i><span>UPM Computer Lab, FSKTM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-people"></i><span>30 / 64 teams registered</span></div>
-                        </div>
-                        <div class="event-card-footer">
-                            <div><div class="event-price">RM 50</div><div class="event-price-label">Per team</div></div>
-                            <a th:href="@{/events/4}" class="btn btn-primary btn-sm">Register</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="event-card">
-                    <div class="event-card-img">
-                        <div class="event-card-img-placeholder" style="background:linear-gradient(135deg,#FCE7F3,#FBCFE8);">
-                            <i class="bi bi-music-note-beamed" style="font-size:3rem;color:#EC4899;"></i>
-                        </div>
-                        <div class="event-card-category"><span class="badge badge-social">Social</span></div>
-                        <div class="event-date-chip"><div class="chip-day">14</div><div class="chip-month">Aug</div></div>
-                        <button class="event-save-btn" onclick="toggleSave(this)"><i class="bi bi-bookmark"></i></button>
-                    </div>
-                    <div class="event-card-body">
-                        <a th:href="@{/events/5}" style="text-decoration:none;">
-                            <h5 class="event-card-title">UPM Annual Cultural Night 2025</h5>
-                        </a>
-                        <div class="event-card-meta">
-                            <div class="event-meta-item"><i class="bi bi-calendar3"></i><span>14 Aug 2025 · 7:00 PM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-geo-alt"></i><span>Dewan Besar UPM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-people"></i><span>400 / 500 registered</span></div>
-                        </div>
-                        <div class="event-card-footer">
-                            <div><div class="event-price">RM 15</div></div>
-                            <a th:href="@{/events/5}" class="btn btn-primary btn-sm">Register</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 6 -->
-                <div class="event-card">
-                    <div class="event-card-img">
-                        <div class="event-card-img-placeholder" style="background:linear-gradient(135deg,#EDE9FE,#DDD6FE);">
-                            <i class="bi bi-cloud-upload" style="font-size:3rem;color:var(--accent);"></i>
-                        </div>
-                        <div class="event-card-category"><span class="badge badge-conference">Conference</span></div>
-                        <div class="event-date-chip"><div class="chip-day">20</div><div class="chip-month">Aug</div></div>
-                        <button class="event-save-btn" onclick="toggleSave(this)"><i class="bi bi-bookmark"></i></button>
-                    </div>
-                    <div class="event-card-body">
-                        <a th:href="@{/events/6}" style="text-decoration:none;">
-                            <h5 class="event-card-title">Cloud Computing &amp; DevOps Conference</h5>
-                        </a>
-                        <div class="event-card-meta">
-                            <div class="event-meta-item"><i class="bi bi-calendar3"></i><span>20 Aug 2025 · 8:30 AM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-geo-alt"></i><span>Faculty of Engineering, UPM</span></div>
-                            <div class="event-meta-item"><i class="bi bi-people"></i><span>95 / 150 registered</span></div>
-                        </div>
-                        <div class="event-card-footer">
-                            <div><div class="event-price free">FREE</div></div>
-                            <a th:href="@{/events/6}" class="btn btn-primary btn-sm">Register</a>
+                            <div>
+                                <div class="event-price free" th:if="${event.free}">FREE</div>
+                                <div class="event-price" th:unless="${event.free}" th:text="'RM ' + ${event.price}">RM 0</div>
+                            </div>
+                            <a th:href="@{/events/{id}(id=${event.id})}" class="btn btn-primary btn-sm">View</a>
                         </div>
                     </div>
                 </div>
 
             </div><!-- /events-grid -->
 
-            <!-- Pagination -->
-            <div class="events-pagination">
-                <a href="#" class="page-btn" aria-label="Previous"><i class="bi bi-chevron-left"></i></a>
-                <a href="#" class="page-btn active">1</a>
-                <a href="#" class="page-btn">2</a>
-                <a href="#" class="page-btn">3</a>
-                <span class="page-btn" style="border:none;cursor:default;">...</span>
-                <a href="#" class="page-btn">12</a>
-                <a href="#" class="page-btn" aria-label="Next"><i class="bi bi-chevron-right"></i></a>
+            <!-- Pagination — single page only, so neighbours are shown disabled/dimmed -->
+            <div class="events-pagination" th:unless="${#lists.isEmpty(events)}">
+                <span class="page-btn" style="opacity:0.4;cursor:not-allowed;" aria-label="Previous"><i class="bi bi-chevron-left"></i></span>
+                <span class="page-btn active">1</span>
+                <span class="page-btn" style="opacity:0.4;cursor:not-allowed;" aria-label="Next"><i class="bi bi-chevron-right"></i></span>
             </div>
 
         </div><!-- /col -->

@@ -34,7 +34,7 @@
     <!-- SECTION FOR BACKEND/DATABASE -->
     <!-- th:action will point to POST /events/create when backend is ready -->
     <!-- th:object="${eventDto}" will bind form fields to EventDto -->
-    <form th:action="@{/events/create}" method="post" id="createEventForm">
+    <form th:action="@{/events/create}" method="post" id="createEventForm" enctype="multipart/form-data">
 
         <div class="create-event-layout">
 
@@ -63,13 +63,14 @@
                             <label class="form-label" for="eventCategory">Category <span style="color:var(--danger);">*</span></label>
                             <select id="eventCategory" name="category" class="form-select" required>
                                 <option value="" disabled selected>Select a category...</option>
-                                <option value="CONFERENCE">🏛️ Conference</option>
-                                <option value="WORKSHOP">🛠️ Workshop</option>
-                                <option value="SEMINAR">📚 Seminar</option>
-                                <option value="SOCIAL">🎉 Social Event</option>
-                                <option value="SPORTS">⚽ Sports</option>
-                                <option value="CULTURAL">🎭 Cultural</option>
-                                <option value="OTHER">📌 Other</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Business">Business</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Seminar">Seminar</option>
+                                <option value="Arts &amp; Culture">Arts &amp; Culture</option>
+                                <option value="Sports &amp; Fitness">Sports &amp; Fitness</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Other">Other</option>
                             </select>
                         </div>
 
@@ -278,24 +279,15 @@
                     <div class="card-body d-flex flex-column gap-4">
                         <div>
                             <label class="form-label" style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;">
-                                Visibility
-                            </label>
-                            <select class="form-select form-select-sm" name="visibility">
-                                <option value="PUBLIC">🌐 Public — Anyone can see</option>
-                                <option value="PRIVATE">🔒 Private — Invite only</option>
-                                <option value="UNLISTED">🔗 Unlisted — Link only</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label" style="font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.05em;">
                                 Status
                             </label>
                             <select class="form-select form-select-sm" name="status" id="statusSelect">
-                                <option value="UPCOMING">🚀 Active / Upcoming</option>
+                                <option value="UPCOMING">🚀 Upcoming</option>
                                 <option value="ONGOING">▶️ Ongoing</option>
                                 <option value="COMPLETED">✅ Completed</option>
                                 <option value="CANCELLED">❌ Cancelled</option>
                             </select>
+                            <div class="form-text">Controls the event's lifecycle label shown to attendees.</div>
                         </div>
                         <!-- Publish Buttons -->
                         <div class="d-flex flex-column gap-2">
@@ -338,29 +330,12 @@
                     </div>
                 </div>
 
-                <!-- Checklist -->
+                <!-- Approval note -->
                 <div class="card">
-                    <div class="card-header"><h6 class="card-title">Checklist</h6></div>
-                    <div class="card-body d-flex flex-column gap-2">
-                        <div class="d-flex align-items-center gap-2 checklist-item" data-field="eventTitle">
-                            <i class="bi bi-circle" style="color:var(--gray-300);font-size:0.8rem;" id="check-title"></i>
-                            <span style="font-size:var(--text-xs);color:var(--text-secondary);">Event title added</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-circle" style="color:var(--gray-300);font-size:0.8rem;" id="check-desc"></i>
-                            <span style="font-size:var(--text-xs);color:var(--text-secondary);">Description written</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-circle" style="color:var(--gray-300);font-size:0.8rem;" id="check-date"></i>
-                            <span style="font-size:var(--text-xs);color:var(--text-secondary);">Date &amp; time set</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-circle" style="color:var(--gray-300);font-size:0.8rem;" id="check-venue"></i>
-                            <span style="font-size:var(--text-xs);color:var(--text-secondary);">Location specified</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-circle" style="color:var(--gray-300);font-size:0.8rem;" id="check-image"></i>
-                            <span style="font-size:var(--text-xs);color:var(--text-secondary);">Cover image uploaded</span>
+                    <div class="card-body">
+                        <div style="font-size:var(--text-xs);color:var(--text-secondary);">
+                            <i class="bi bi-info-circle me-1 text-primary-color"></i>
+                            Your event will be submitted for <strong>admin approval</strong> and becomes public once approved.
                         </div>
                     </div>
                 </div>

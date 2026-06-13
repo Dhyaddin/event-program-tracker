@@ -7,6 +7,7 @@ import com.eventtracker.repository.RegistrationRepository;
 import com.eventtracker.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     @Override
+    public List<Registration> findByOrganizer(User organizer) {
+        return registrationRepository.findByEvent_Organizer(organizer);
+    }
+
+    @Override
     public void cancelRegistration(Long registrationId) {
         // Delete the record so the user can re-register later if needed.
         // existsByUserAndEvent checks existence regardless of status, so keeping
@@ -61,5 +67,33 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public long countRegistrations(Event event) {
         return registrationRepository.countByEvent(event);
+    }
+
+    @Override
+    public long countAllRegistrations() {
+        return registrationRepository.count();
+    }
+
+    @Override
+    @Transactional
+    public void deleteRegistrationsForEvent(Event event) {
+        registrationRepository.deleteByEvent(event);
+    }
+
+    @Override
+    @Transactional
+    public void deleteRegistrationsForUser(User user) {
+        registrationRepository.deleteByUser(user);
+    }
+
+    @Override
+    @Transactional
+    public void markAttendedForEvent(Event event) {
+        for (Registration reg : registrationRepository.findByEvent(event)) {
+            if (reg.getStatus() == Registration.Status.REGISTERED) {
+                reg.setStatus(Registration.Status.ATTENDED);
+                registrationRepository.save(reg);
+            }
+        }
     }
 }

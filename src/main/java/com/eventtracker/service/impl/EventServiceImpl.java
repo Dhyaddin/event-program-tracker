@@ -47,6 +47,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<Event> findByCategory(String category) {
+        return eventRepository.findByCategoryOrderByEventDateAsc(category);
+    }
+
+    @Override
+    public List<String> findDistinctCategories() {
+        return eventRepository.findDistinctCategories();
+    }
+
+    @Override
     public Event updateEvent(Event event) {
         return eventRepository.save(event);
     }
@@ -59,5 +69,50 @@ public class EventServiceImpl implements EventService {
     @Override
     public long countAllEvents() {
         return eventRepository.count();
+    }
+
+    // ── Approval workflow ────────────────────────────────────────────────────
+
+    @Override
+    public List<Event> findApprovedEvents() {
+        // Public listing: approved AND still live (hide completed & cancelled events)
+        return eventRepository.findByApprovedTrueOrderByEventDateAsc().stream()
+                .filter(EventServiceImpl::isLive)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public List<Event> findApprovedByCategory(String category) {
+        return eventRepository.findByApprovedTrueAndCategoryOrderByEventDateAsc(category).stream()
+                .filter(EventServiceImpl::isLive)
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    // A "live" event is one the public can still see and register for.
+    private static boolean isLive(Event e) {
+        return e.getStatus() == Event.Status.UPCOMING || e.getStatus() == Event.Status.ONGOING;
+    }
+
+    @Override
+    public List<Event> findPendingEvents() {
+        return eventRepository.findByApprovedFalseOrderByCreatedAtDesc();
+    }
+
+    @Override
+    public long countPendingEvents() {
+        return eventRepository.countByApprovedFalse();
+    }
+
+    @Override
+    public long countApprovedEvents() {
+        return eventRepository.countByApprovedTrue();
+    }
+
+    @Override
+    public void approveEvent(Long id) {
+        eventRepository.findById(id).ifPresent(event -> {
+            event.setApproved(true);
+            eventRepository.save(event);
+        });
     }
 }

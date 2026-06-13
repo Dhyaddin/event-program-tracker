@@ -60,13 +60,13 @@
             <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);">
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);"><i class="bi bi-calendar3"></i></div>
-                    <div class="stat-value" data-count="6">0</div>
+                    <div class="stat-value" th:attr="data-count=${#lists.size(myEvents)}" data-count="0">0</div>
                     <div class="stat-label">Total Events</div>
                     <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+2 this month</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--success-light);color:var(--success);"><i class="bi bi-people"></i></div>
-                    <div class="stat-value" data-count="234">0</div>
+                    <div class="stat-value" th:attr="data-count=${totalRegistrations}" data-count="0">0</div>
                     <div class="stat-label">Total Registrations</div>
                     <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+24% vs last month</div>
                 </div>
@@ -94,50 +94,19 @@
                         </div>
                         <!-- SECTION FOR BACKEND/DATABASE — th:each="event : ${eventStats}" -->
                         <div class="p-5 d-flex flex-column gap-5">
-                            <div>
+                            <div th:each="event : ${myEvents}" th:with="rate=${event.capacity > 0 ? (regCounts[event.id] * 100 / event.capacity) : 0}">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">Tech Innovation Summit 2025</span>
-                                    <span style="font-size:var(--text-sm);color:var(--text-muted);">42 / 200 (21%)</span>
+                                    <span style="font-size:var(--text-sm);font-weight:var(--font-medium);" th:text="${event.title}">Event</span>
+                                    <span style="font-size:var(--text-sm);color:var(--text-muted);"
+                                          th:text="${regCounts[event.id]} + ' / ' + ${event.capacity} + ' (' + ${rate} + '%)'">0 / 0 (0%)</span>
                                 </div>
                                 <div style="height:10px;background:var(--bg-tertiary);border-radius:5px;overflow:hidden;">
-                                    <div style="width:21%;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:5px;transition:width 1s ease;" class="reveal-bar" data-width="21%"></div>
+                                    <div style="height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:5px;transition:width 1s ease;"
+                                         class="reveal-bar" th:style="'width:' + ${rate} + '%'" th:attr="data-width=${rate} + '%'"></div>
                                 </div>
                             </div>
-                            <div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">UPM Research Seminar</span>
-                                    <span style="font-size:var(--text-sm);color:var(--text-muted);">87 / 120 (73%)</span>
-                                </div>
-                                <div style="height:10px;background:var(--bg-tertiary);border-radius:5px;overflow:hidden;">
-                                    <div style="width:73%;height:100%;background:linear-gradient(90deg,var(--success),#059669);border-radius:5px;" class="reveal-bar" data-width="73%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">UPM Sports Carnival 2025</span>
-                                    <span style="font-size:var(--text-sm);color:var(--text-muted);">118 / 150 (79%)</span>
-                                </div>
-                                <div style="height:10px;background:var(--bg-tertiary);border-radius:5px;overflow:hidden;">
-                                    <div style="width:79%;height:100%;background:linear-gradient(90deg,var(--warning),#d97706);border-radius:5px;" class="reveal-bar" data-width="79%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">Data Science Bootcamp (Draft)</span>
-                                    <span style="font-size:var(--text-sm);color:var(--text-muted);">0 / 50 (0%)</span>
-                                </div>
-                                <div style="height:10px;background:var(--bg-tertiary);border-radius:5px;overflow:hidden;">
-                                    <div style="width:0%;height:100%;background:var(--gray-400);border-radius:5px;" class="reveal-bar" data-width="0%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span style="font-size:var(--text-sm);font-weight:var(--font-medium);">Career Fair UPM 2024</span>
-                                    <span style="font-size:var(--text-sm);color:var(--text-muted);">105 / 120 (88%)</span>
-                                </div>
-                                <div style="height:10px;background:var(--bg-tertiary);border-radius:5px;overflow:hidden;">
-                                    <div style="width:88%;height:100%;background:linear-gradient(90deg,var(--accent),#7c3aed);border-radius:5px;" class="reveal-bar" data-width="88%"></div>
-                                </div>
+                            <div th:if="${#lists.isEmpty(myEvents)}" class="text-center py-3" style="color:var(--text-muted);">
+                                No events to analyse yet.
                             </div>
                         </div>
                     </div>

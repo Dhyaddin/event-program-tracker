@@ -4,7 +4,7 @@
 <!--
   File: src/main/resources/templates/dashboard/dashboard-user.html
   Route: GET /dashboard/user
-  Controller: DashboardController.userDashboard()
+  Controller: DashboardController (USER branch)
   Access: USER role required
 -->
 
@@ -13,244 +13,57 @@
 <body>
 <div class="dashboard-layout">
 
-    <!-- Sidebar Overlay (mobile) -->
     <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
-
-    <!-- Sidebar -->
     <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='dashboard', userRole='USER')}"></div>
 
-    <!-- Main -->
     <div class="dashboard-main">
 
-        <!-- Topbar -->
-        <header class="dashboard-topbar">
-            <div class="topbar-left">
-                <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar">
-                    <i class="bi bi-list"></i>
-                </button>
-                <div class="topbar-search d-none d-md-flex">
-                    <i class="bi bi-search search-icon"></i>
-                    <input type="text" class="form-control" placeholder="Search events..."/>
-                </div>
-            </div>
-            <div class="topbar-right">
-                <!-- Notifications Dropdown -->
-                <div class="dropdown">
-                    <button class="topbar-btn" title="Notifications"
-                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="0,8">
-                        <i class="bi bi-bell"></i>
-                        <span class="notif-dot"></span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-0"
-                         style="width:340px;border-radius:var(--radius-xl);overflow:hidden;">
-                        <div class="d-flex align-items-center justify-content-between px-4 py-3"
-                             style="border-bottom:1px solid var(--border-color);background:var(--bg-secondary);">
-                            <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Notifications</span>
-                            <button class="btn btn-link btn-sm p-0 text-decoration-none" style="font-size:var(--text-xs);color:var(--primary);">Mark all read</button>
-                        </div>
-                        <div style="max-height:320px;overflow-y:auto;">
-                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
-                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
-                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
-                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(79,70,229,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <i class="bi bi-check-circle-fill" style="color:var(--primary);font-size:0.9rem;"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Registration Confirmed</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">Your seat for <strong>Tech Innovation Summit</strong> is confirmed.</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>2 hours ago</div>
-                                </div>
-                            </a>
-                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
-                               style="border-bottom:1px solid var(--border-color);"
-                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
-                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <i class="bi bi-calendar-event-fill" style="color:var(--success);font-size:0.9rem;"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Event Reminder</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>UPM Research Seminar</strong> starts tomorrow at 9:00 AM.</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>5 hours ago</div>
-                                </div>
-                            </a>
-                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
-                               style="border-bottom:1px solid var(--border-color);"
-                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
-                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(245,158,11,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <i class="bi bi-star-fill" style="color:var(--warning);font-size:0.9rem;"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">New Event Available</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;"><strong>AI Workshop 2025</strong> is now open for registration.</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>Yesterday</div>
-                                </div>
-                            </a>
-                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
-                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
-                                <div style="width:36px;height:36px;border-radius:50%;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <i class="bi bi-exclamation-circle-fill" style="color:var(--danger);font-size:0.9rem;"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Deadline Approaching</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">Registration for <strong>Sports Carnival</strong> closes in 2 days.</div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:4px;"><i class="bi bi-clock me-1"></i>2 days ago</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="text-center py-3" style="border-top:1px solid var(--border-color);background:var(--bg-secondary);">
-                            <a href="#" onclick="showComingSoon(event,'Notifications page coming soon.')"
-                               style="font-size:var(--text-xs);color:var(--primary);text-decoration:none;font-weight:var(--font-medium);">
-                                View all notifications <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+        <header th:replace="~{fragments/topbar :: topbar('My Dashboard')}"></header>
 
-                <!-- Messages Dropdown -->
-                <div class="dropdown">
-                    <button class="topbar-btn" title="Messages"
-                            data-bs-toggle="dropdown" aria-expanded="false" data-bs-offset="0,8">
-                        <i class="bi bi-chat-dots"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-0"
-                         style="width:320px;border-radius:var(--radius-xl);overflow:hidden;">
-                        <div class="d-flex align-items-center justify-content-between px-4 py-3"
-                             style="border-bottom:1px solid var(--border-color);background:var(--bg-secondary);">
-                            <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);">Messages</span>
-                            <span class="badge" style="background:var(--primary);font-size:0.65rem;">2 new</span>
-                        </div>
-                        <div style="max-height:280px;overflow-y:auto;">
-                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
-                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
-                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
-                                <div class="avatar avatar-sm" style="background:var(--accent);color:white;flex-shrink:0;">S</div>
-                                <div style="min-width:0;">
-                                    <div class="d-flex justify-content-between">
-                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Siti Organiser</span>
-                                        <span style="font-size:var(--text-xs);color:var(--text-muted);">10m</span>
-                                    </div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Your registration has been confirmed!</div>
-                                </div>
-                            </a>
-                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
-                               style="border-bottom:1px solid var(--border-color);background:rgba(79,70,229,0.04);"
-                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background='rgba(79,70,229,0.04)'">
-                                <div class="avatar avatar-sm" style="background:var(--danger);color:white;flex-shrink:0;">A</div>
-                                <div style="min-width:0;">
-                                    <div class="d-flex justify-content-between">
-                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">Admin</span>
-                                        <span style="font-size:var(--text-xs);color:var(--text-muted);">1h</span>
-                                    </div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Welcome to EventTracker! Please complete your profile.</div>
-                                </div>
-                            </a>
-                            <a href="#" class="d-flex gap-3 px-4 py-3 text-decoration-none"
-                               onmouseover="this.style.background='var(--bg-secondary)'" onmouseout="this.style.background=''">
-                                <div class="avatar avatar-sm" style="background:var(--success);color:white;flex-shrink:0;">E</div>
-                                <div style="min-width:0;">
-                                    <div class="d-flex justify-content-between">
-                                        <span style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">EventBot</span>
-                                        <span style="font-size:var(--text-xs);color:var(--text-muted);">2d</span>
-                                    </div>
-                                    <div style="font-size:var(--text-xs);color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Reminder: Tech Innovation Summit is in 3 days.</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="text-center py-3" style="border-top:1px solid var(--border-color);background:var(--bg-secondary);">
-                            <a href="#" onclick="showComingSoon(event,'Messages page coming soon.')"
-                               style="font-size:var(--text-xs);color:var(--primary);text-decoration:none;font-weight:var(--font-medium);">
-                                View all messages <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="dropdown ms-2">
-                    <button class="d-flex align-items-center gap-2 btn btn-ghost btn-sm" data-bs-toggle="dropdown">
-                        <div class="avatar avatar-sm" style="background:var(--primary);color:white;">A</div>
-                        <span class="d-none d-sm-block" style="font-size:var(--text-sm);font-weight:var(--font-medium);">
-                            Ahmad
-                        </span>
-                        <i class="bi bi-chevron-down" style="font-size:0.7rem;color:var(--text-muted);"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg py-2" style="min-width:180px;border-radius:var(--radius-xl);">
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" th:href="@{/profile}">
-                            <i class="bi bi-person"></i>My Profile</a></li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
-                            <i class="bi bi-gear"></i>Settings</a></li>
-                        <li><hr class="dropdown-divider"/></li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" href="#">
-                            <i class="bi bi-box-arrow-left"></i>Sign Out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>
-
-        <!-- Dashboard Content -->
         <main class="dashboard-content">
 
             <!-- Welcome -->
             <div class="dashboard-welcome">
-                <!-- SECTION FOR BACKEND/DATABASE — ${user.firstName} -->
-                <h1>Good morning, Ahmad! 👋</h1>
-                <p>Here's what's happening with your events today.</p>
-                <div class="date-badge">
-                    <i class="bi bi-calendar3"></i>
-                    Sunday, 7 June 2026
-                </div>
+                <h1 th:text="'Welcome back, ' + ${user.name} + '! 👋'">Welcome back! 👋</h1>
+                <p>Here's what's happening with your events.</p>
             </div>
 
-            <!-- Stats Cards -->
-            <!-- SECTION FOR BACKEND/DATABASE — dynamic counts from service layer -->
-            <div class="stats-grid">
+            <!-- Stats Cards (all live) -->
+            <div class="stats-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--primary-50);color:var(--primary);">
                         <i class="bi bi-ticket-detailed"></i>
                     </div>
-                    <div class="stat-value" data-count="3">0</div>
+                    <div class="stat-value" th:text="${totalRegistered}">0</div>
                     <div class="stat-label">Registered Events</div>
-                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+1 this week</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--success-light);color:var(--success);">
                         <i class="bi bi-check-circle"></i>
                     </div>
-                    <div class="stat-value" data-count="12">0</div>
+                    <div class="stat-value" th:text="${attendedCount}">0</div>
                     <div class="stat-label">Events Attended</div>
-                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+3 this month</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);">
                         <i class="bi bi-bookmark"></i>
                     </div>
-                    <div class="stat-value" data-count="7">0</div>
+                    <div class="stat-value" th:text="${savedCount}">0</div>
                     <div class="stat-label">Saved Events</div>
-                    <div class="stat-change" style="color:var(--text-muted);">—</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon" style="background:var(--accent-50);color:var(--accent);">
-                        <i class="bi bi-award"></i>
-                    </div>
-                    <div class="stat-value" data-count="8">0</div>
-                    <div class="stat-label">Certificates Earned</div>
-                    <div class="stat-change up"><i class="bi bi-arrow-up-short"></i>+2 this month</div>
                 </div>
             </div>
 
             <div class="row g-5">
 
-                <!-- LEFT COLUMN -->
-                <div class="col-lg-7">
-
-                    <!-- My Upcoming Registrations -->
+                <!-- LEFT: My registrations -->
+                <div class="col-lg-8">
                     <div class="dashboard-table mb-5">
                         <div class="table-header">
-                            <h5>My Upcoming Events</h5>
-                            <a href="#" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">
+                            <h5>My Registrations</h5>
+                            <a th:href="@{/my-registrations}" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">
                                 View all <i class="bi bi-arrow-right ms-1"></i>
                             </a>
                         </div>
-                        <!-- SECTION FOR BACKEND/DATABASE -->
-                        <!-- th:each="registration : ${upcomingRegistrations}" -->
                         <table class="table-custom">
                             <thead>
                                 <tr>
@@ -261,112 +74,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr th:each="reg : ${registrations}">
                                     <td>
-                                        <div style="font-weight:var(--font-semibold);">AI &amp; ML Summit 2025</div>
-                                        <div style="font-size:var(--text-xs);color:var(--text-muted);">DK5, Faculty of CS, UPM</div>
+                                        <div style="font-weight:var(--font-semibold);" th:text="${reg.event.title}">Event</div>
+                                        <div style="font-size:var(--text-xs);color:var(--text-muted);" th:text="${reg.event.location != null ? reg.event.location : 'TBA'}">Location</div>
                                     </td>
-                                    <td><span style="font-size:var(--text-xs);">15 Jul 2025</span></td>
-                                    <td><span class="badge badge-success">Confirmed</span></td>
+                                    <td><span style="font-size:var(--text-xs);" th:text="${reg.event.eventDate != null ? #temporals.format(reg.event.eventDate,'d MMM yyyy') : 'TBA'}">Date</span></td>
                                     <td>
-                                        <a th:href="@{/events/1}" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">
-                                            View
-                                        </a>
+                                        <span class="badge badge-success" th:if="${reg.status.name() == 'REGISTERED'}">Confirmed</span>
+                                        <span class="badge badge-success" th:if="${reg.status.name() == 'ATTENDED'}">Attended</span>
+                                        <span class="badge badge-warning" th:if="${reg.status.name() == 'CANCELLED'}">Cancelled</span>
                                     </td>
-                                </tr>
-                                <tr>
                                     <td>
-                                        <div style="font-weight:var(--font-semibold);">Creative Design Workshop</div>
-                                        <div style="font-size:var(--text-xs);color:var(--text-muted);">Putra Business School</div>
-                                    </td>
-                                    <td><span style="font-size:var(--text-xs);">22 Jul 2025</span></td>
-                                    <td><span class="badge badge-warning">Pending</span></td>
-                                    <td>
-                                        <a th:href="@{/events/2}" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">
-                                            View
-                                        </a>
+                                        <a th:href="@{/events/{id}(id=${reg.event.id})}" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">View</a>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div style="font-weight:var(--font-semibold);">Startup Seminar Season 3</div>
-                                        <div style="font-size:var(--text-xs);color:var(--text-muted);">Auditorium FBMK</div>
-                                    </td>
-                                    <td><span style="font-size:var(--text-xs);">1 Aug 2025</span></td>
-                                    <td><span class="badge badge-success">Confirmed</span></td>
-                                    <td>
-                                        <a th:href="@{/events/3}" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">
-                                            View
-                                        </a>
-                                    </td>
+                                <tr th:if="${#lists.isEmpty(registrations)}">
+                                    <td colspan="4" class="text-center py-4" style="color:var(--text-muted);">No registrations yet. <a th:href="@{/events}">Browse events</a>.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-
-                    <!-- Activity Feed -->
-                    <div class="dashboard-table">
-                        <div class="table-header">
-                            <h5>Recent Activity</h5>
-                        </div>
-                        <div class="p-5">
-                            <!-- SECTION FOR BACKEND/DATABASE — dynamic activity from ActivityLog -->
-                            <ul class="activity-feed">
-                                <li class="activity-item">
-                                    <div class="activity-icon" style="background:var(--success-light);color:var(--success);">
-                                        <i class="bi bi-check-circle"></i>
-                                    </div>
-                                    <div class="activity-body">
-                                        <div class="activity-text">
-                                            You registered for <strong>AI &amp; ML Summit 2025</strong>
-                                        </div>
-                                        <div class="activity-time">2 hours ago</div>
-                                    </div>
-                                </li>
-                                <li class="activity-item">
-                                    <div class="activity-icon" style="background:var(--primary-50);color:var(--primary);">
-                                        <i class="bi bi-bookmark"></i>
-                                    </div>
-                                    <div class="activity-body">
-                                        <div class="activity-text">
-                                            You saved <strong>UPM E-Sports Championship</strong>
-                                        </div>
-                                        <div class="activity-time">Yesterday at 4:30 PM</div>
-                                    </div>
-                                </li>
-                                <li class="activity-item">
-                                    <div class="activity-icon" style="background:var(--accent-50);color:var(--accent);">
-                                        <i class="bi bi-award"></i>
-                                    </div>
-                                    <div class="activity-body">
-                                        <div class="activity-text">
-                                            Certificate received for <strong>Cloud Computing Workshop</strong>
-                                        </div>
-                                        <div class="activity-time">3 days ago</div>
-                                    </div>
-                                </li>
-                                <li class="activity-item">
-                                    <div class="activity-icon" style="background:var(--warning-light);color:var(--warning);">
-                                        <i class="bi bi-star"></i>
-                                    </div>
-                                    <div class="activity-body">
-                                        <div class="activity-text">
-                                            You rated <strong>Startup Seminar Season 2</strong> ⭐⭐⭐⭐⭐
-                                        </div>
-                                        <div class="activity-time">1 week ago</div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
                 </div>
 
-                <!-- RIGHT COLUMN -->
-                <div class="col-lg-5">
-
-                    <!-- Quick Actions -->
-                    <div class="row g-3 mb-5">
+                <!-- RIGHT: Quick actions -->
+                <div class="col-lg-4">
+                    <div class="row g-3">
                         <div class="col-6">
                             <a th:href="@{/events}" class="quick-action-card">
                                 <div class="action-icon"><i class="bi bi-search"></i></div>
@@ -374,13 +107,13 @@
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="#" class="quick-action-card">
+                            <a th:href="@{/my-registrations}" class="quick-action-card">
                                 <div class="action-icon"><i class="bi bi-ticket-detailed"></i></div>
-                                <span>My Tickets</span>
+                                <span>My Registrations</span>
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="#" class="quick-action-card">
+                            <a th:href="@{/my-saved}" class="quick-action-card">
                                 <div class="action-icon"><i class="bi bi-bookmark"></i></div>
                                 <span>Saved Events</span>
                             </a>
@@ -392,61 +125,12 @@
                             </a>
                         </div>
                     </div>
-
-                    <!-- Upcoming Events Widget -->
-                    <div class="dashboard-table">
-                        <div class="table-header">
-                            <h5>Upcoming This Month</h5>
-                            <a th:href="@{/events}" class="btn btn-sm btn-ghost" style="border:1px solid var(--border-color);">
-                                All <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                        <div class="p-5">
-                            <!-- SECTION FOR BACKEND/DATABASE -->
-                            <div class="d-flex flex-column">
-                                <div class="upcoming-event-item">
-                                    <div class="upcoming-date">
-                                        <div class="day">15</div>
-                                        <div class="month">Jul</div>
-                                    </div>
-                                    <div class="upcoming-info">
-                                        <div class="upcoming-title">AI &amp; ML Summit 2025</div>
-                                        <div class="upcoming-meta"><i class="bi bi-geo-alt me-1"></i>DK5, FSKTM</div>
-                                    </div>
-                                    <span class="badge badge-success" style="font-size:0.65rem;">Registered</span>
-                                </div>
-                                <div class="upcoming-event-item">
-                                    <div class="upcoming-date">
-                                        <div class="day">22</div>
-                                        <div class="month">Jul</div>
-                                    </div>
-                                    <div class="upcoming-info">
-                                        <div class="upcoming-title">Design Workshop</div>
-                                        <div class="upcoming-meta"><i class="bi bi-geo-alt me-1"></i>Putra Business School</div>
-                                    </div>
-                                    <span class="badge badge-warning" style="font-size:0.65rem;">Pending</span>
-                                </div>
-                                <div class="upcoming-event-item">
-                                    <div class="upcoming-date">
-                                        <div class="day">01</div>
-                                        <div class="month">Aug</div>
-                                    </div>
-                                    <div class="upcoming-info">
-                                        <div class="upcoming-title">Startup Seminar S3</div>
-                                        <div class="upcoming-meta"><i class="bi bi-geo-alt me-1"></i>Auditorium FBMK</div>
-                                    </div>
-                                    <span class="badge badge-success" style="font-size:0.65rem;">Registered</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
-        </main><!-- /dashboard-content -->
-    </div><!-- /dashboard-main -->
-</div><!-- /dashboard-layout -->
+        </main>
+    </div>
+</div>
 
 <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>

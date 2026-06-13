@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--
+  File: src/main/resources/templates/admin/approvals.html
+  Route: GET /admin/approvals
+  Controller: AdminPagesController.approvals()
+  Access: ADMIN role
+-->
+
+<head th:replace="~{fragments/head :: head(title='Organiser Approvals')}"></head>
+
+<body>
+<div class="dashboard-layout">
+
+    <div th:replace="~{fragments/sidebar :: sidebar-overlay}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar(activeMenu='approvals', userRole='ADMIN')}"></div>
+
+    <div class="dashboard-main">
+
+        <header th:replace="~{fragments/topbar :: topbar('Organiser Approvals')}"></header>
+
+        <main class="dashboard-content">
+
+            <div class="dashboard-welcome">
+                <h1>Organiser Approvals ✅</h1>
+                <p>Review and approve organisers before they can publish events.</p>
+            </div>
+
+            <!-- Flash messages -->
+            <div th:if="${successMessage}" class="alert alert-success" role="alert"
+                 style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-5);">
+                <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}">Done</span>
+            </div>
+            <div th:if="${errorMessage}" class="alert alert-danger" role="alert"
+                 style="background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-5);">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMessage}">Error</span>
+            </div>
+
+            <!-- Pending count -->
+            <div class="stats-grid" style="grid-template-columns:repeat(1,minmax(0,260px));margin-bottom:var(--space-6);">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:var(--warning-light);color:var(--warning);"><i class="bi bi-hourglass-split"></i></div>
+                    <div class="stat-value" th:text="${pendingCount}">0</div>
+                    <div class="stat-label">Awaiting Approval</div>
+                </div>
+            </div>
+
+            <!-- Pending organisers table -->
+            <div class="dashboard-table">
+                <div class="table-header">
+                    <h5>Pending Organisers</h5>
+                </div>
+                <table class="table-custom">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Requested</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="org : ${pendingOrganisers}">
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="avatar avatar-sm" style="background:var(--accent);color:white;"
+                                         th:text="${#strings.substring(org.name,0,1).toUpperCase()}">F</div>
+                                    <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);" th:text="${org.name}">Name</span>
+                                </div>
+                            </td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);" th:text="${org.email}">email</td>
+                            <td style="font-size:var(--text-sm);color:var(--text-secondary);" th:text="${org.phone != null ? org.phone : '—'}">phone</td>
+                            <td style="font-size:var(--text-xs);color:var(--text-muted);"
+                                th:text="${org.createdAt != null ? #temporals.format(org.createdAt,'d MMM yyyy') : ''}">date</td>
+                            <td>
+                                <div class="d-flex gap-2 justify-content-end">
+                                    <form th:action="@{/admin/approvals/{id}/approve(id=${org.id})}" method="post" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-check-lg me-1"></i>Approve
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/admin/approvals/{id}/reject(id=${org.id})}" method="post" class="m-0"
+                                          onsubmit="return confirm('Reject this organiser request?');">
+                                        <button type="submit" class="btn btn-sm"
+                                                style="border:1px solid var(--danger);color:var(--danger);background:transparent;">
+                                            <i class="bi bi-x-lg me-1"></i>Reject
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(pendingOrganisers)}">
+                            <td colspan="5" class="text-center py-4" style="color:var(--text-muted);">
+                                <i class="bi bi-check2-circle me-1"></i>No organisers are waiting for approval.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

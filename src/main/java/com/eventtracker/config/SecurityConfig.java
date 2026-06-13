@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
+                                "/uploads/**",      // Uploaded cover images
                                 "/events"           // Public can browse events list
                         ).permitAll()
 

@@ -14,4 +14,13 @@ public interface UserService {
     List<User> findAllUsers();
     boolean emailExists(String email);
     long countAllUsers();
+
+    // Organiser-approval workflow
+    List<User> findPendingOrganisers();
+    long countPendingOrganisers();
+    void approveOrganiser(Long id);
+    void rejectOrganiser(Long id);
+
+    /** Change a user's password. Returns false if the current password does not match. */
+    boolean changePassword(String email, String currentPassword, String newPassword);
 }

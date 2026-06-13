@@ -20,8 +20,11 @@
 <!-- SECTION FOR BACKEND/DATABASE -->
 <!-- th:style will use event.coverImageUrl when backend is ready -->
 <div class="event-detail-hero">
-    <div class="event-card-img-placeholder" style="height:100%;background:linear-gradient(135deg,#1E1B4B,#312E81,#4338CA);">
-        <i class="bi bi-cpu" style="font-size:5rem;color:rgba(255,255,255,0.4);"></i>
+    <img th:if="${event.imageUrl != null and !event.imageUrl.isEmpty()}" th:src="${event.imageUrl}" alt="Event cover"
+         style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"/>
+    <div th:unless="${event.imageUrl != null and !event.imageUrl.isEmpty()}"
+         class="event-card-img-placeholder" style="height:100%;background:linear-gradient(135deg,#1E1B4B,#312E81,#4338CA);">
+        <i class="bi bi-calendar-event" style="font-size:5rem;color:rgba(255,255,255,0.4);"></i>
     </div>
     <div class="event-detail-hero-overlay"></div>
     <div class="event-detail-hero-content">
@@ -61,6 +64,17 @@
      MAIN CONTENT
      ═══════════════════════════════════════════ -->
 <div class="container py-8" style="max-width:var(--container-max);">
+
+    <!-- Flash messages -->
+    <div th:if="${successMessage}" class="alert" role="alert"
+         style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-5);">
+        <i class="bi bi-check-circle-fill me-2"></i><span th:text="${successMessage}">Done</span>
+    </div>
+    <div th:if="${errorMessage}" class="alert" role="alert"
+         style="background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);margin-bottom:var(--space-5);">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i><span th:text="${errorMessage}">Error</span>
+    </div>
+
     <div class="row g-6">
 
         <!-- LEFT COLUMN: Event Details -->
@@ -79,9 +93,20 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-sm" style="background:var(--gray-100);color:var(--text-secondary);" onclick="toggleSave(this)">
+                    <!-- Save / unsave bookmark (logged-in users only) -->
+                    <form sec:authorize="isAuthenticated()" th:action="@{/events/{id}/save(id=${event.id})}" method="post" class="m-0">
+                        <button type="submit" class="btn btn-sm"
+                                th:style="${isSaved}
+                                    ? 'background:var(--primary);color:white;'
+                                    : 'background:var(--gray-100);color:var(--text-secondary);'">
+                            <i class="bi me-1" th:classappend="${isSaved} ? 'bi-bookmark-fill' : 'bi-bookmark'"></i>
+                            <span th:text="${isSaved} ? 'Saved' : 'Save'">Save</span>
+                        </button>
+                    </form>
+                    <a sec:authorize="!isAuthenticated()" th:href="@{/auth/login}" class="btn btn-sm"
+                       style="background:var(--gray-100);color:var(--text-secondary);">
                         <i class="bi bi-bookmark me-1"></i>Save
-                    </button>
+                    </a>
                     <button class="btn btn-sm" style="background:var(--gray-100);color:var(--text-secondary);">
                         <i class="bi bi-share me-1"></i>Share
                     </button>
@@ -97,86 +122,138 @@
                 </div>
             </div>
 
-            <!-- Agenda / Schedule -->
+            <!-- Location (real) -->
             <div class="card mb-5">
-                <div class="card-header"><h5 class="card-title"><i class="bi bi-list-check me-2 text-primary-color"></i>Event Schedule</h5></div>
-                <div class="card-body p-0">
-                    <!-- Schedule Items -->
-                    <div style="display:flex;flex-direction:column;">
-                        <!-- Item -->
-                        <div class="d-flex align-items-start gap-4 p-4" style="border-bottom:1px solid var(--border-light);">
-                            <div style="min-width:80px;text-align:right;">
-                                <span style="font-size:var(--text-sm);font-weight:var(--font-bold);color:var(--primary);">8:00 AM</span>
+                <div class="card-header"><h5 class="card-title"><i class="bi bi-geo-alt me-2 text-primary-color"></i>Location</h5></div>
+                <div class="card-body">
+                    <p style="font-weight:var(--font-semibold);margin-bottom:var(--space-1);"
+                       th:text="${event.location != null ? event.location : 'Venue to be confirmed'}">Venue</p>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════
+                 ADMIN NOTES (admin can comment; owner can read)
+                 ═══════════════════════════════════════════ -->
+            <div class="card mb-5" th:if="${canComment or (isOwner and !#lists.isEmpty(comments))}">
+                <div class="card-header"><h5 class="card-title"><i class="bi bi-chat-left-text me-2 text-primary-color"></i>Admin Notes</h5></div>
+                <div class="card-body">
+
+                    <!-- Admin: leave a note (admins cannot edit the event directly) -->
+                    <form th:if="${canComment}" th:action="@{/events/{id}/comment(id=${event.id})}" method="post" class="mb-4">
+                        <label class="form-label" style="font-size:var(--text-sm);">Leave a note for the organiser</label>
+                        <textarea name="message" class="form-control mb-2" rows="3"
+                                  placeholder="Suggest changes for the organiser to consider..."></textarea>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-send me-1"></i>Send Note</button>
+                    </form>
+
+                    <!-- Owner sees a hint -->
+                    <div th:if="${isOwner and !#lists.isEmpty(comments)}" style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-3);">
+                        <i class="bi bi-info-circle me-1"></i>Notes from the admin — review and update your event if you agree.
+                    </div>
+
+                    <!-- Notes list -->
+                    <div th:each="c : ${comments}" class="d-flex gap-3 py-3" style="border-top:1px solid var(--border-light);">
+                        <div class="avatar avatar-sm" style="background:var(--danger);color:white;flex-shrink:0;"><i class="bi bi-shield-check" style="font-size:0.8rem;"></i></div>
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);"
+                                      th:text="${c.author != null ? c.author.name : 'Admin'}">Admin</span>
+                                <span style="font-size:var(--text-xs);color:var(--text-muted);"
+                                      th:text="${c.createdAt != null ? #temporals.format(c.createdAt,'d MMM yyyy, h:mm a') : ''}">time</span>
                             </div>
-                            <div style="width:2px;background:var(--primary);align-self:stretch;border-radius:2px;flex-shrink:0;margin:4px 0;"></div>
-                            <div>
-                                <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-primary);">Registration &amp; Welcome Coffee</div>
-                                <div style="font-size:var(--text-xs);color:var(--text-muted);">Lobby, DK5</div>
-                            </div>
+                            <div style="font-size:var(--text-sm);color:var(--text-secondary);" th:text="${c.message}">Note</div>
                         </div>
-                        <div class="d-flex align-items-start gap-4 p-4" style="border-bottom:1px solid var(--border-light);">
-                            <div style="min-width:80px;text-align:right;">
-                                <span style="font-size:var(--text-sm);font-weight:var(--font-bold);color:var(--primary);">9:00 AM</span>
-                            </div>
-                            <div style="width:2px;background:var(--primary);align-self:stretch;border-radius:2px;flex-shrink:0;margin:4px 0;"></div>
-                            <div>
-                                <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-primary);">Keynote: "The Future of AI in Southeast Asia"</div>
-                                <div style="font-size:var(--text-xs);color:var(--text-muted);">Dr. Hafiz Roslan · Main Hall, DK5</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start gap-4 p-4" style="border-bottom:1px solid var(--border-light);">
-                            <div style="min-width:80px;text-align:right;">
-                                <span style="font-size:var(--text-sm);font-weight:var(--font-bold);color:var(--primary);">11:00 AM</span>
-                            </div>
-                            <div style="width:2px;background:var(--primary);align-self:stretch;border-radius:2px;flex-shrink:0;margin:4px 0;"></div>
-                            <div>
-                                <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-primary);">Workshop: "Hands-on with TensorFlow &amp; PyTorch"</div>
-                                <div style="font-size:var(--text-xs);color:var(--text-muted);">Lab 1 &amp; Lab 2, FSKTM</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start gap-4 p-4" style="border-bottom:1px solid var(--border-light);">
-                            <div style="min-width:80px;text-align:right;">
-                                <span style="font-size:var(--text-sm);font-weight:var(--font-bold);color:var(--text-muted);">1:00 PM</span>
-                            </div>
-                            <div style="width:2px;background:var(--gray-200);align-self:stretch;border-radius:2px;flex-shrink:0;margin:4px 0;"></div>
-                            <div>
-                                <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-secondary);">Lunch Break</div>
-                                <div style="font-size:var(--text-xs);color:var(--text-muted);">Cafeteria, Level 2</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start gap-4 p-4">
-                            <div style="min-width:80px;text-align:right;">
-                                <span style="font-size:var(--text-sm);font-weight:var(--font-bold);color:var(--primary);">3:00 PM</span>
-                            </div>
-                            <div style="width:2px;background:var(--primary);align-self:stretch;border-radius:2px;flex-shrink:0;margin:4px 0;"></div>
-                            <div>
-                                <div style="font-size:var(--text-sm);font-weight:var(--font-semibold);color:var(--text-primary);">Closing Ceremony &amp; Certificate Distribution</div>
-                                <div style="font-size:var(--text-xs);color:var(--text-muted);">Main Hall, DK5</div>
-                            </div>
-                        </div>
+                    </div>
+                    <div th:if="${canComment and #lists.isEmpty(comments)}" style="font-size:var(--text-sm);color:var(--text-muted);">
+                        No notes yet.
                     </div>
                 </div>
             </div>
 
-            <!-- Location -->
-            <div class="card mb-5">
-                <div class="card-header"><h5 class="card-title"><i class="bi bi-geo-alt me-2 text-primary-color"></i>Location</h5></div>
+            <!-- ═══════════════════════════════════════════
+                 REVIEWS & RATINGS
+                 ═══════════════════════════════════════════ -->
+            <div class="card mb-5" id="reviews">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="card-title"><i class="bi bi-star me-2 text-primary-color"></i>Reviews &amp; Ratings</h5>
+                    <div class="d-flex align-items-center gap-2" th:if="${feedbackCount > 0}">
+                        <span style="font-size:1.25rem;font-weight:var(--font-bold);color:var(--text-primary);"
+                              th:text="${averageRating}">0.0</span>
+                        <span style="color:#f59e0b;">
+                            <i class="bi" th:each="i : ${#numbers.sequence(1,5)}"
+                               th:classappend="${i <= averageRating ? 'bi-star-fill' : (i - 0.5 <= averageRating ? 'bi-star-half' : 'bi-star')}"></i>
+                        </span>
+                        <span style="font-size:var(--text-xs);color:var(--text-muted);"
+                              th:text="'(' + ${feedbackCount} + ')'">(0)</span>
+                    </div>
+                </div>
                 <div class="card-body">
-                    <p style="font-weight:var(--font-semibold);margin-bottom:var(--space-1);">Dewan Kuliah 5 (DK5)</p>
-                    <p style="font-size:var(--text-sm);color:var(--text-secondary);">
-                        Faculty of Computer Science and Information Technology,<br/>
-                        Universiti Putra Malaysia,<br/>
-                        43400 Serdang, Selangor.
-                    </p>
-                    <!-- Map Placeholder -->
-                    <div style="height:220px;background:var(--gray-100);border-radius:var(--radius-xl);
-                                display:flex;align-items:center;justify-content:center;
-                                border:1px solid var(--border-color);margin-top:var(--space-4);">
-                        <div style="text-align:center;color:var(--text-muted);">
-                            <i class="bi bi-map" style="font-size:2.5rem;margin-bottom:var(--space-2);display:block;"></i>
-                            <span style="font-size:var(--text-sm);">Map integration — coming soon</span>
+
+                    <!-- Review form: registered attendees only -->
+                    <div th:if="${canReview}" class="mb-5 p-4" style="background:var(--bg-secondary);border-radius:var(--radius-lg);">
+                        <div style="font-weight:var(--font-semibold);margin-bottom:var(--space-3);"
+                             th:text="${hasReviewed} ? 'Update your review' : 'Leave a review'">Leave a review</div>
+                        <form th:action="@{/events/{id}/feedback(id=${event.id})}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size:var(--text-sm);">Rating</label>
+                                <select name="rating" class="form-control" style="max-width:160px;">
+                                    <option th:each="i : ${#numbers.sequence(5,1)}"
+                                            th:value="${i}"
+                                            th:text="${i} + ' ★'"
+                                            th:selected="${myFeedback != null and myFeedback.rating == i}">5 ★</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" style="font-size:var(--text-sm);">Comment (optional)</label>
+                                <textarea name="comment" class="form-control" rows="3"
+                                          placeholder="Share your experience..."
+                                          th:text="${myFeedback != null ? myFeedback.comment : ''}"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-send me-1"></i><span th:text="${hasReviewed} ? 'Update Review' : 'Submit Review'">Submit Review</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Prompt for logged-in users who cannot review yet -->
+                    <div sec:authorize="isAuthenticated()" th:if="${!canReview and isRegistered and event.status.name() != 'COMPLETED'}"
+                         style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4);">
+                        <i class="bi bi-info-circle me-1"></i>You can review this event once it has been marked completed.
+                    </div>
+                    <div sec:authorize="isAuthenticated()" th:if="${!canReview and !isRegistered}"
+                         style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4);">
+                        <i class="bi bi-info-circle me-1"></i>Only people who registered and attended this event can leave a review.
+                    </div>
+                    <!-- Prompt for anonymous visitors -->
+                    <div sec:authorize="!isAuthenticated()"
+                         style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4);">
+                        <a th:href="@{/auth/login}" style="color:var(--primary);">Sign in</a> and register to leave a review.
+                    </div>
+
+                    <!-- Review list -->
+                    <div th:if="${#lists.isEmpty(feedbackList)}" style="color:var(--text-muted);font-size:var(--text-sm);">
+                        No reviews yet. Be the first to share your experience!
+                    </div>
+                    <div th:each="fb : ${feedbackList}" class="d-flex gap-3 py-3" style="border-top:1px solid var(--border-light);">
+                        <div class="avatar avatar-sm" style="background:var(--accent);color:white;flex-shrink:0;"
+                             th:text="${fb.user != null ? #strings.substring(fb.user.name,0,1).toUpperCase() : '?'}">U</div>
+                        <div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span style="font-weight:var(--font-semibold);font-size:var(--text-sm);"
+                                      th:text="${fb.user != null ? fb.user.name : 'Anonymous'}">Reviewer</span>
+                                <span style="color:#f59e0b;font-size:0.8rem;">
+                                    <i class="bi" th:each="i : ${#numbers.sequence(1,5)}"
+                                       th:classappend="${i <= fb.rating} ? 'bi-star-fill' : 'bi-star'"></i>
+                                </span>
+                            </div>
+                            <div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:4px;"
+                                 th:text="${fb.createdAt != null ? #temporals.format(fb.createdAt,'d MMM yyyy') : ''}">date</div>
+                            <div style="font-size:var(--text-sm);color:var(--text-secondary);"
+                                 th:if="${fb.comment != null and !fb.comment.isBlank()}"
+                                 th:text="${fb.comment}">Comment</div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -244,18 +321,23 @@
                 <!-- CTA -->
                 <div class="event-info-footer">
 
-                    <!-- NOT logged in: show login link -->
+                    <!-- NOT logged in -->
                     <div sec:authorize="!isAuthenticated()">
                         <a th:href="@{/auth/login}" class="btn btn-primary btn-lg btn-block mb-3">
                             <i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Register
                         </a>
-                        <p style="font-size:var(--text-xs);color:var(--text-muted);text-align:center;margin-top:var(--space-3);">
-                            <a th:href="@{/auth/login}" style="color:var(--primary);">Sign in</a> to register for this event
-                        </p>
                     </div>
 
-                    <!-- Logged in + already registered: show cancel -->
-                    <div sec:authorize="isAuthenticated()" th:if="${isRegistered}">
+                    <!-- Owner / admin: manage instead of register -->
+                    <div th:if="${canEdit}">
+                        <a th:href="@{/events/{id}/edit(id=${event.id})}" class="btn btn-primary btn-lg btn-block mb-3" style="width:100%;">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Event
+                        </a>
+                        <p style="font-size:var(--text-xs);color:var(--text-muted);text-align:center;">You manage this event.</p>
+                    </div>
+
+                    <!-- Participant, already registered: cancel -->
+                    <div sec:authorize="isAuthenticated()" th:if="${canRegister and isRegistered}">
                         <div style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;
                                     border-radius:var(--radius-lg);padding:var(--space-3);
                                     margin-bottom:var(--space-3);font-size:var(--text-sm);text-align:center;">
@@ -269,8 +351,8 @@
                         </form>
                     </div>
 
-                    <!-- Logged in + not registered: show register -->
-                    <div sec:authorize="isAuthenticated()" th:if="${!isRegistered}">
+                    <!-- Participant, not registered: register -->
+                    <div sec:authorize="isAuthenticated()" th:if="${canRegister and !isRegistered}">
                         <form th:action="@{/events/{id}/register(id=${event.id})}" method="post">
                             <button type="submit" class="btn btn-primary btn-lg btn-block mb-3" style="width:100%;">
                                 <i class="bi bi-ticket-detailed me-2"></i>Register Now
@@ -278,21 +360,16 @@
                         </form>
                     </div>
 
+                    <!-- Logged-in non-participant who is not the owner (e.g. another organiser/admin viewing) -->
+                    <div sec:authorize="isAuthenticated()" th:if="${!canRegister and !canEdit}">
+                        <p style="font-size:var(--text-sm);color:var(--text-muted);text-align:center;margin:0;">
+                            <i class="bi bi-info-circle me-1"></i>Only participant accounts can register for events.
+                        </p>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- Tags -->
-            <div class="card mt-4">
-                <div class="card-header"><h6 class="card-title">Tags</h6></div>
-                <div class="card-body d-flex flex-wrap gap-2">
-                    <span class="badge badge-gray">#ArtificialIntelligence</span>
-                    <span class="badge badge-gray">#MachineLearning</span>
-                    <span class="badge badge-gray">#UPM</span>
-                    <span class="badge badge-gray">#Tech</span>
-                    <span class="badge badge-gray">#Conference</span>
-                    <span class="badge badge-gray">#FSKTM</span>
-                </div>
-            </div>
 
         </div><!-- /col-lg-4 -->
     </div><!-- /row -->

@@ -56,6 +56,12 @@ public class Event {
     @Column(nullable = false)
     private Double price = 0.0;
 
+    // Admin approval: organiser-created events start unapproved (hidden from public)
+    // until an admin approves them. Admin-created and seeded events are approved.
+    // Nullable so adding the column to an existing database does not fail.
+    @Column
+    private Boolean approved;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -65,6 +71,12 @@ public class Event {
         if (this.status == null) this.status = Status.UPCOMING;
         if (this.price == null) this.price = 0.0;
         if (this.capacity == null) this.capacity = 0;
+        if (this.approved == null) this.approved = false;
+    }
+
+    // Convenience helper for templates: treats null as not approved.
+    public boolean isApproved() {
+        return Boolean.TRUE.equals(this.approved);
     }
 
     // Convenience helper — used in Thymeleaf with th:text="${event.free ? 'Free' : event.price}"

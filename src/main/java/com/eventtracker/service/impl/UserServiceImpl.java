@@ -61,4 +61,45 @@ public class UserServiceImpl implements UserService {
     public long countAllUsers() {
         return userRepository.count();
     }
+
+    // ── Organiser-approval workflow ──────────────────────────────────────────
+
+    @Override
+    public List<User> findPendingOrganisers() {
+        return userRepository.findByRoleAndStatus(User.Role.ORGANIZER, User.Status.PENDING);
+    }
+
+    @Override
+    public long countPendingOrganisers() {
+        return userRepository.countByRoleAndStatus(User.Role.ORGANIZER, User.Status.PENDING);
+    }
+
+    @Override
+    public void approveOrganiser(Long id) {
+        userRepository.findById(id).ifPresent(user -> {
+            user.setStatus(User.Status.APPROVED);
+            userRepository.save(user);
+        });
+    }
+
+    @Override
+    public void rejectOrganiser(Long id) {
+        userRepository.findById(id).ifPresent(user -> {
+            user.setStatus(User.Status.REJECTED);
+            userRepository.save(user);
+        });
+    }
+
+    @Override
+    public boolean changePassword(String email, String currentPassword, String newPassword) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) return false;
+        // Verify the current password against the stored BCrypt hash
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return false;
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
+    }
 }
